@@ -16,9 +16,6 @@ namespace GOAP
     [RequireComponent(typeof(Animator))]
     public class GoapAgent : MonoBehaviour
     {
-        [Header("Enemy")]
-        [SerializeField] private Enemy.Enemy _enemy;
-        
         [Header("Sensors")] 
         [SerializeField] private EyesSensor _eyesSensor;
         [SerializeField] private HitSensor _hitSensor;
@@ -135,13 +132,13 @@ namespace GOAP
             var hitSensorStream = _hitSensor.IsActiveSensor.Select(isHit => (isHit, "HitSensor"));
             var attackSensorStream = _attackSensor.IsActiveSensor.Select(isAttacking => (isAttacking, "AttackSensor"));
             
-            var mergeStream = eyesSensorStream.Merge(hitSensorStream, attackSensorStream);
+            var mergeStream = Observable.Merge(eyesSensorStream, hitSensorStream, attackSensorStream);
             
             mergeStream.Subscribe(sensorData =>
             {
                 Debug.LogWarning($"Sensor: {sensorData.Item2} ; IsActive: {sensorData.Item1}");
-                
-                if(sensorData.Item1)
+    
+                if (sensorData.Item1)
                     FindMostPriorityGoal();
 
             }).AddTo(_disposable);

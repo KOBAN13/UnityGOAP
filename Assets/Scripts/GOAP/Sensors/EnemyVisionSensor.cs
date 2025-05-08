@@ -13,11 +13,20 @@ namespace GOAP
         private readonly ReactiveProperty<bool> _isActiveSensor = new();
 
         private bool _isFindEnemy;
+        private CompositeDisposable _compositeDisposable = new();
         private IDisposable _disposable;
+        
 
         private void OnEnable()
         {
-            _eyesSensor.IsActiveSensor.Subscribe(CheckEnemyVision).AddTo(this);
+            _eyesSensor.IsActiveSensor.Subscribe(CheckEnemyVision).AddTo(_compositeDisposable);
+        }
+
+        private void OnDestroy()
+        {
+            _compositeDisposable?.Dispose();
+            _disposable?.Dispose();
+            _compositeDisposable?.Clear();
         }
 
         private void CheckEnemyVision(bool isActive)

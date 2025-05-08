@@ -51,8 +51,12 @@ namespace GOAP
             }
             
             if(_actionStrategy.Complete == false) return _status = BTNodeStatus.Running;
-
-            Effects.ForEach(effect => effect.CheckCondition());
+            
+            foreach (var effect in Effects)
+            {
+                effect.CheckCondition();
+            }
+            
             _status = BTNodeStatus.Success;
             return _status;
         }

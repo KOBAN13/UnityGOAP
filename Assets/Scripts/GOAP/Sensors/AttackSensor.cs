@@ -1,4 +1,5 @@
-﻿using R3;
+﻿using CharacterScripts;
+using R3;
 using UnityEngine;
 using Vector3 = UnityEngine.Vector3;
 
@@ -9,7 +10,7 @@ namespace GOAP
     {
         public Vector3 Target => _target ? _target.transform.position : Vector3.zero;
         public bool IsActivate => _isActiveSensor.Value;
-        public IReadOnlyReactiveProperty<bool> IsActiveSensor => _isActiveSensor;
+        public ReadOnlyReactiveProperty<bool> IsActiveSensor => _isActiveSensor;
         
         [SerializeField] private float _radiusDetect;
         [SerializeField] private SphereCollider _trigger;
@@ -18,30 +19,22 @@ namespace GOAP
         private Vector3 _lastKnownPosition;
         private readonly CompositeDisposable _compositeDisposable = new();
         private readonly ReactiveProperty<bool> _isActiveSensor = new();
+        
 
-
-        private void OnEnable()
+        private void OnTriggerEnter(Collider other)
         {
-            SubTriggers();
+            if (other.TryGetComponent(out Player player))
+            {
+                UpdateTargetPosition(other.gameObject);
+            }
         }
-
-        private void SubTriggers()
+        
+        private void OnTriggerExit(Collider other)
         {
-            _trigger.OnTriggerEnterAsObservable().Subscribe(trigger =>
+            if (other.TryGetComponent(out Player player))
             {
-                if (trigger.TryGetComponent(out PlayerComponents player))
-                {
-                    UpdateTargetPosition(trigger.gameObject);
-                }
-            }).AddTo(_compositeDisposable);
-            
-            _trigger.OnTriggerExitAsObservable().Subscribe(trigger =>
-            {
-                if (trigger.TryGetComponent(out PlayerComponents player))
-                {
-                    UpdateTargetPosition();
-                }
-            }).AddTo(_compositeDisposable);
+                UpdateTargetPosition();
+            }
         }
 
         private void OnDisable()

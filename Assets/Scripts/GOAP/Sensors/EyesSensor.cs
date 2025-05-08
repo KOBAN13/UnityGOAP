@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using CharacterScripts;
 using R3;
 using UnityEngine;
 
@@ -26,7 +27,7 @@ namespace GOAP
         private Mesh _eyesSensor;
         private IDisposable _disposable;
         
-        public IReadOnlyReactiveProperty<bool> IsActiveSensor => _isActiveSensor;
+        public ReadOnlyReactiveProperty<bool> IsActiveSensor => _isActiveSensor;
         
         private void OnEnable()
         {
@@ -60,7 +61,7 @@ namespace GOAP
 
         private void SetTarget()
         {
-            Target = Objects.Count > 0 && Objects[0]?.TryGetComponent(out PlayerComponents component) == true
+            Target = Objects.Count > 0 && Objects[0]?.TryGetComponent(out Player component) == true
                 ? Objects[0].transform.position 
                 : Vector3.zero;
 
