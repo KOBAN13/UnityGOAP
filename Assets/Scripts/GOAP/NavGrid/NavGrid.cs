@@ -13,7 +13,6 @@ public class NavGrid : MonoBehaviour
     private bool _debug = true;
     private string _debugTag = "NavGridDebugSphere";
     private GameObject _debugText;
-    private TextMeshProUGUI _debugTMP;
     private GameObject _debugContainer;
     public PointMap _pointMap;
     private GeneratorChunksRound _generatorChunksRound;
@@ -88,9 +87,6 @@ public class NavGrid : MonoBehaviour
         {
             _debugContainer = GameObject.Find("DebugContainer");
             _debugText = GameObject.Find("Text (TMP)");
-            _debugTMP = _debugText.GetComponent<TextMeshProUGUI>();
-            _debugTMP.enableAutoSizing = true;
-            _debugTMP.enableWordWrapping = true;
         }
 
         _navMesh = GetComponent<NavMeshSurface>();
