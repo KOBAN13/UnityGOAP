@@ -1,81 +1,35 @@
-﻿using System;
-using System.Threading;
-using Cysharp.Threading.Tasks;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace CharacterScripts
 {
-    public class Rotate : IRotate, IDisposable
+    public class Rotate : IRotate
     {
-        private PlayerComponents _playerComponents;
-        public CancellationTokenSource CancellationTokenSource { get; private set; }
+        private readonly PlayerComponents _playerComponents;
+        
+        private Vector3 _targetDirection;
         
         public Rotate(PlayerComponents playerComponents)
         {
             _playerComponents = playerComponents;
         }
 
-        public async UniTask RotateCharacter(Vector3 mousePosition)
+        public void RotateCharacter(Vector2 moveDirection)
         {
-            CancellationTokenSource?.Cancel();
-            CancellationTokenSource = new CancellationTokenSource();
+            if(Mathf.Approximately(moveDirection.sqrMagnitude, 0f)) return;
             
-            var ray = _playerComponents.Camera.ScreenPointToRay(mousePosition);
+            var characterTransform = _playerComponents.PlayerTransform;
+            _targetDirection = new Vector3(moveDirection.x, 0f, moveDirection.y);
 
-            if (UnityEngine.Physics.Raycast(ray, out var hitGround, 150f, LayerMask.GetMask("Ground")))
-            {
-                await FindDirection(hitGround);
-            }
+            if (!(Vector3.Angle(characterTransform.forward, moveDirection) > 0f)) return;
             
-            if (UnityEngine.Physics.Raycast(ray, out var hitEnemy, 150f, LayerMask.GetMask("Enemy")))
-            {
-                await FindDirection(hitEnemy);
-            }
+            var newDirection = Vector3.RotateTowards(
+                characterTransform.forward,
+                _targetDirection, 
+                _playerComponents.SpeedRotate,
+                0f
+            );
             
-        }
-
-        private async UniTask FindDirection(RaycastHit hit)
-        {
-            var direction = hit.point - _playerComponents.PlayerTransform.position;
-                
-            try
-            {
-                await Lerp(-direction);
-            }
-            catch (OperationCanceledException cancel)
-            {
-                Debug.LogWarning($"Operation is cancelled {cancel.Message}");
-            }
-        }
-
-        private async UniTask Lerp(Vector3 direction)
-        {
-            direction.y = 0f;
-
-            var angle = Quaternion.Angle(_playerComponents.PlayerTransform.rotation,
-                Quaternion.LookRotation(direction));
-
-            var rotationSpeed = 180f;
-            var rotationStep = rotationSpeed * Time.deltaTime;
-
-            while (angle > rotationStep)
-            {
-                _playerComponents.PlayerTransform.rotation = Quaternion.Slerp(
-                    _playerComponents.PlayerTransform.rotation, Quaternion.LookRotation(direction),
-                    rotationStep / angle);
-
-                angle -= rotationStep;
-
-                await UniTask.Yield(CancellationTokenSource.Token);
-            }
-
-            await UniTask.CompletedTask;
-        }
-
-        public void Dispose()
-        {
-            CancellationTokenSource?.Cancel();
-            CancellationTokenSource?.Dispose();
+            characterTransform.rotation = Quaternion.LookRotation(newDirection);
         }
     }
 }

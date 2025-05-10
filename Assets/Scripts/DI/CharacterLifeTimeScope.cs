@@ -1,5 +1,4 @@
 ﻿using CharacterScripts;
-using InputSystem;
 using UnityEngine;
 using VContainer;
 using VContainer.Unity;
@@ -14,11 +13,11 @@ namespace DI
         {
             builder.RegisterInstance(_playerComponents);
 
-            builder.Register<NewInputSystem>(Lifetime.Singleton);
-            builder.Register<IInputSystem, InputSystemPC>(Lifetime.Singleton);
-            builder.Register<IRotate, Rotate>(Lifetime.Singleton);
-            builder.Register<IMovable, Movement>(Lifetime.Singleton);
-            builder.Register<Player>(Lifetime.Singleton);
+            builder.Register<NewInputSystem>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
+            builder.Register<InputSystemPC>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
+            builder.Register<Rotate>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
+            builder.Register<Movement>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
+            builder.Register<Player>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
         }
     }
 }

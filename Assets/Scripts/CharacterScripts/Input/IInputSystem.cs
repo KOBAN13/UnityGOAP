@@ -6,6 +6,5 @@ namespace InputSystem
     public interface IInputSystem
     {
         Vector2 Input { get; }
-        ReactiveProperty<Vector3> MouseClick { get; }
     }
 }

@@ -5,6 +5,6 @@ namespace CharacterScripts
 {
     public interface IRotate
     {
-        UniTask RotateCharacter(Vector3 mousePosition);
+        void RotateCharacter(Vector2 moveDirection);
     }
 }
