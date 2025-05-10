@@ -61,7 +61,7 @@ namespace GOAP
 
         private void SetTarget()
         {
-            Target = Objects.Count > 0 && Objects[0]?.TryGetComponent(out Player component) == true
+            Target = Objects.Count > 0 && Objects[0]?.TryGetComponent(out PlayerComponents component) == true
                 ? Objects[0].transform.position 
                 : Vector3.zero;
 

@@ -23,7 +23,7 @@ namespace GOAP
 
         private void OnTriggerEnter(Collider other)
         {
-            if (other.TryGetComponent(out Player player))
+            if (other.TryGetComponent(out PlayerComponents player))
             {
                 UpdateTargetPosition(other.gameObject);
             }
@@ -31,7 +31,7 @@ namespace GOAP
         
         private void OnTriggerExit(Collider other)
         {
-            if (other.TryGetComponent(out Player player))
+            if (other.TryGetComponent(out PlayerComponents player))
             {
                 UpdateTargetPosition();
             }

@@ -36,7 +36,7 @@ namespace GOAP
 
         private void OnTriggerEnter(Collider other)
         {
-            if (!other.TryGetComponent(out Player playerComponents)) return;
+            if (!other.TryGetComponent(out PlayerComponents playerComponents)) return;
                 
             Target = playerComponents.transform.position;
             _isActiveSensor.Value = true;
@@ -44,7 +44,7 @@ namespace GOAP
         
         private void OnTriggerExit(Collider other)
         {
-            if (!other.TryGetComponent(out Player playerComponents)) return;
+            if (!other.TryGetComponent(out PlayerComponents playerComponents)) return;
                 
             Target = Vector3.zero;
             _isActiveSensor.Value = false;
