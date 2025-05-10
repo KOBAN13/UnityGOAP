@@ -3,7 +3,8 @@
 --- !u!78 &1
 TagManager:
   serializedVersion: 3
-  tags: []
+  tags:
+  - NavGridDebugSphere
   layers:
   - Default
   - TransparentFX
@@ -11,12 +12,12 @@ TagManager:
   - 
   - Water
   - UI
+  - Ground
   - Player
+  - Enemy
   - Obstacle
   - 
-  - 
-  - 
-  - 
+  - Wall
   - 
   - 
   - 

@@ -12,7 +12,6 @@ public class NavGrid : MonoBehaviour
     private NavMeshSurface _navMesh;
     private bool _debug = true;
     private string _debugTag = "NavGridDebugSphere";
-    private GameObject _debugText;
     private GameObject _debugContainer;
     public PointMap _pointMap;
     private GeneratorChunksRound _generatorChunksRound;
@@ -86,7 +85,6 @@ public class NavGrid : MonoBehaviour
         if (_debug)
         {
             _debugContainer = GameObject.Find("DebugContainer");
-            _debugText = GameObject.Find("Text (TMP)");
         }
 
         _navMesh = GetComponent<NavMeshSurface>();
