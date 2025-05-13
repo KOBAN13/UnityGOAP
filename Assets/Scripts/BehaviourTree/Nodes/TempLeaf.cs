@@ -1,27 +1,32 @@
 ﻿using System.Collections.Generic;
 using GOAP;
+using GOAP.Pools;
 
 namespace BehaviourTree
 {
-    public class TempLeaf
+    public class TempLeaf : IPool
     {
-        public AgentAction AgentAction { get; }
-        public HashSet<AgentBelief> RequiredEffects { get; }
-        public float Cost { get; }
-        public string Name { get; }
-        public bool IsLeafDead { get; set; }
+        public AgentAction AgentAction { get; private set; }
+        public HashSet<AgentBelief> RequiredEffects { get; private set; }
+        public float Cost { get; private set; }
+        public string Name { get; private set; }
         
         public IReadOnlyList<TempLeaf> Children => _children;
         private readonly List<TempLeaf> _children = new();
 
-        public TempLeaf(AgentAction action, HashSet<AgentBelief> effects, float cost, string name)
+        public void InitializeLeaf(AgentAction action, HashSet<AgentBelief> effects, float cost, string name)
         {
             AgentAction = action;
             RequiredEffects = effects;
             Cost = cost;
             Name = name;
         }
-        
+
         public void AddChild(TempLeaf child) => _children.Add(child);
+        
+        public void Clear()
+        {
+            _children.Clear();
+        }
     }
 }

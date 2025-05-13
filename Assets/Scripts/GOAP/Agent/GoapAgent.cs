@@ -9,6 +9,7 @@ using UnityEngine.AI;
 using VContainer;
 using Customs;
 using Game.Player.PlayerStateMashine;
+using GOAP.Pools;
 
 namespace GOAP
 {
@@ -43,13 +44,15 @@ namespace GOAP
         private readonly HashSet<AgentAction> _actions = new();
         private readonly HashSet<AgentGoal> _goals = new();
         private readonly CompositeDisposable _disposable = new();
+        private IGoapPlanner _goapPlanner;
         private AgentPlan _actionPlan;
         private Setuppers _setuppers;
         private BehaviourTree.BehaviourTree _behaviourTree;
         private BlackboardController _blackboardController;
         private AgentGoal _agentGoal;
         private IBTDebugger _debugger;
-        private readonly IGoapPlanner _goapPlanner = new GoapPlannerAStar();
+        private GenericClassPool<TempLeaf> _tempLeafPool;
+        private CollectionPool<HashSet<AgentBelief>> _poolHashSet;
         
         [Inject]
         public void Construct(IBTDebugger debugger)
@@ -66,6 +69,11 @@ namespace GOAP
             
             _setuppers = new Setuppers(_actions, _agentBeliefs, 
                 _goals, _blackboardController);
+            
+            _poolHashSet = new CollectionPool<HashSet<AgentBelief>>(null, null, 10);
+            _tempLeafPool = new GenericClassPool<TempLeaf>(null, null, 10);
+            
+            _goapPlanner = new GoapPlannerAStar(_poolHashSet, _tempLeafPool);
             
             _setuppers.SetupBeliefs();
             _setuppers.SetupActions();
@@ -158,7 +166,7 @@ namespace GOAP
 
             var countLeafs = leafs.Count;
             
-            for (int i = 0; i < countLeafs; i++)
+            for (var i = 0; i < countLeafs; i++)
             {
                 var leafNative = leafs.Pop();
                 var leaf = new Leaf(leafNative.AgentAction,
@@ -166,6 +174,9 @@ namespace GOAP
                     leafNative.Cost, leafNative.Name, 
                     _debugger);
                 
+                _tempLeafPool.Release(leafNative);
+                leafNative.RequiredEffects.Clear();
+                _poolHashSet.Release(leafNative.RequiredEffects);
                 sequencePlan.AddChild(leaf);
             }
             

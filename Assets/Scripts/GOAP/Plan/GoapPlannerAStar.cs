@@ -1,6 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using BehaviourTree;
+using GOAP.Pools;
+using Unity.VisualScripting;
+
 using UnityEngine;
 
 namespace GOAP
@@ -8,14 +11,27 @@ namespace GOAP
     public class GoapPlannerAStar : IGoapPlanner
     {
         private readonly Dictionary<AgentBelief, HashSet<AgentAction>> _effectToActionsCache = new();
+        private readonly HashSet<AgentBelief> _requiredEffects = new();
         private readonly Dictionary<AgentBelief, bool> _conditionsCache = new();
         private readonly HashSet<AgentBelief> _worldBeliefs = new();
         private readonly Dictionary<HashSet<AgentBelief>, float> _visited = new(HashSetComparer<AgentBelief>.Instance);
         private readonly Stack<TempLeaf> _actionStack = new();
         private readonly PriorityQueue<TempLeaf, float> _openSet = new();
+        
+        private readonly CollectionPool<HashSet<AgentBelief>> _poolHashSet;
+        private readonly GenericClassPool<TempLeaf> _pool;
+        
+        public GoapPlannerAStar(CollectionPool<HashSet<AgentBelief>> poolHashSet, GenericClassPool<TempLeaf> pool)
+        {
+            _pool = pool;
+            _poolHashSet = poolHashSet;
+        }
 
-        public (AgentPlan plan, AgentGoal goal) GetPlan(HashSet<AgentAction> availableActions, HashSet<AgentGoal> goals,
-            AgentGoal mostRecentGoal = null)
+        public (AgentPlan plan, AgentGoal goal) GetPlan(
+            HashSet<AgentAction> availableActions,
+            HashSet<AgentGoal> goals,
+            AgentGoal mostRecentGoal = null
+        )
         {
             BuildEffectToActionsMap(availableActions);
             GetAllWorldBeliefs(availableActions, goals);
@@ -27,16 +43,14 @@ namespace GOAP
             
             foreach (var goal in orderedGoals)
             {
-                var requiredEffects = new HashSet<AgentBelief>(
-                    goal.DesiredEffects.Where(b => !_conditionsCache[b])
-                );
+                _requiredEffects.Clear();
+                _requiredEffects.AddRange(goal.DesiredEffects.Where(b => !_conditionsCache[b]));
 
-                var startNode = new TempLeaf(null, requiredEffects, 0f, "Start");
+                var startNode = _pool.Get();
+                startNode.InitializeLeaf(null, _requiredEffects, 0f, "Start");
 
                 if (FindPathAStar(startNode))
                 {
-                    if(startNode.IsLeafDead) continue;
-                    
                     BuildActionStack(startNode);
                     
                     return (new AgentPlan(startNode.Cost, _actionStack), goal);
@@ -75,13 +89,17 @@ namespace GOAP
 
                 foreach (var action in GetRelevantActions(currentEffect).OrderBy(a => a.Cost))
                 {
-                    var newEffects = new HashSet<AgentBelief>(currentEffect);
+                    var newEffects = _poolHashSet.Get();
+                    newEffects.AddRange(currentEffect);
+                    
                     newEffects.ExceptWith(action.Effects);
                     newEffects.UnionWith(action.Precondition);
 
                     var newCost = currentNode.Cost + action.Cost;
-
-                    var newNode = new TempLeaf(action, newEffects, newCost, action.Name);
+                    
+                    var newNode = _pool.Get();
+                    newNode.InitializeLeaf(action, newEffects, newCost, action.Name);
+                    
                     currentNode.AddChild(newNode);
 
                     var priority = newCost + Heuristic(newEffects);
