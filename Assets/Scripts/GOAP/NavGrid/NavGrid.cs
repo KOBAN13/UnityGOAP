@@ -77,10 +77,9 @@ public class NavGrid : MonoBehaviour
         AddObstaclesLayer("Ground");
         AddObstaclesLayer("Obstacle");
 
-
         _pointMap = new PointMap(new GridCallback(_obstaclesLayers));
 
-        _generatorChunksRound = new GeneratorChunksRound(_pointMap, _mainPoint, 5);
+        _generatorChunksRound = new GeneratorChunksRound(_pointMap, _mainPoint, 2);
 
         if (_debug)
         {

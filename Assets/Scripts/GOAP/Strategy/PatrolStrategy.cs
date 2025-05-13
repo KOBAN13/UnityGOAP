@@ -12,7 +12,6 @@ namespace GOAP
     {
         private readonly NavMeshAgent _agent;
         private readonly Transform _entry;
-        private readonly GeneratorChunksRound _generatorChunks;
         private readonly float _duration;
         private bool _isPathCalculated;
         private CompositeDisposable _disposable;
@@ -24,7 +23,6 @@ namespace GOAP
 
         public PatrolStrategy(BlackboardController blackboardController, float duration)
         {
-            _generatorChunks = blackboardController.GetValue<GeneratorChunksRound>(NameAIKeys.GeneratorChunks);
             _agent = blackboardController.GetValue<NavMeshAgent>(NameAIKeys.Agent);
             _entry = blackboardController.GetValue<Transform>(NameAIKeys.TransformAI);
             _navGrid = blackboardController.GetValue<NavGrid>(NameAIKeys.NavGrid);
@@ -47,8 +45,6 @@ namespace GOAP
 
         public void Update(float deltaTime)
         {
-            _generatorChunks.Update();
-
             if (_isPathCalculated && _agent.remainingDistance < 1f)
             {
                 ChangePosition();

@@ -41,7 +41,7 @@ namespace GOAP
         [Header("Goap Scripts")]
         private readonly Dictionary<string, AgentBelief> _agentBeliefs = new();
         private readonly HashSet<AgentAction> _actions = new();
-        private HashSet<AgentGoal> _goals = new();
+        private readonly HashSet<AgentGoal> _goals = new();
         private readonly CompositeDisposable _disposable = new();
         private AgentPlan _actionPlan;
         private Setuppers _setuppers;
@@ -101,7 +101,6 @@ namespace GOAP
             _blackboardController.SetValue(NameAIKeys.SearchEnemyRadius, 5f);
             _blackboardController.SetValue(NameAIKeys.TimeToSearchEnemy, 3f);
             _blackboardController.SetValue(NameAIKeys.CountIterationSearchEnemy, 3);
-            _blackboardController.SetValue(NameAIKeys.GeneratorChunks, new GeneratorChunksRound(_navGrid.GetPointMap(), transform, 1));
             
             _blackboardController.SetValue<Func<bool>>(NameExperts.NothingPredicate, () => false);
             _blackboardController.SetValue<Func<bool>>(NameExperts.AttackPredicate, () => false);
