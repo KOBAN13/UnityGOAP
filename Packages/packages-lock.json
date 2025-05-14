@@ -9,6 +9,13 @@
       },
       "hash": "6af3cc5c1941fe21bfe0fe3472f2c2dfaa881469"
     },
+    "com.cysharp.zlinq": {
+      "version": "https://github.com/Cysharp/ZLinq.git?path=src/ZLinq.Unity/Assets/ZLinq.Unity",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {},
+      "hash": "3f95f299a421096ab75b15a9636ef87e7695a871"
+    },
     "com.unity.ai.navigation": {
       "version": "2.0.4",
       "depth": 0,
