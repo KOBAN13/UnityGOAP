@@ -19,11 +19,11 @@ namespace GOAP
         private readonly PriorityQueue<TempLeaf, float> _openSet = new();
         
         private readonly CollectionPool<HashSet<AgentBelief>> _poolHashSet;
-        private readonly GenericClassPool<TempLeaf> _pool;
+        private readonly GenericClassPool<TempLeaf> _tempLeafPool;
         
-        public GoapPlannerAStar(CollectionPool<HashSet<AgentBelief>> poolHashSet, GenericClassPool<TempLeaf> pool)
+        public GoapPlannerAStar(CollectionPool<HashSet<AgentBelief>> poolHashSet, GenericClassPool<TempLeaf> tempLeafPool)
         {
-            _pool = pool;
+            _tempLeafPool = tempLeafPool;
             _poolHashSet = poolHashSet;
         }
 
@@ -46,15 +46,32 @@ namespace GOAP
                 _requiredEffects.Clear();
                 _requiredEffects.AddRange(goal.DesiredEffects.Where(b => !_conditionsCache[b]));
 
-                var startNode = _pool.Get();
+                var startNode = _tempLeafPool.Get();
                 startNode.InitializeLeaf(null, _requiredEffects, 0f, "Start");
 
                 if (FindPathAStar(startNode))
                 {
                     BuildActionStack(startNode);
                     
+                    _tempLeafPool.Release(startNode);
+                    
                     return (new AgentPlan(startNode.Cost, _actionStack), goal);
                 }
+
+                BuildAllLeafs(startNode);
+                
+                var countLeafs = _actionStack.Count;
+                    
+                for (var i = 0; i < countLeafs; i++)
+                {
+                    var leafNative = _actionStack.Pop();
+                        
+                    _tempLeafPool.Release(leafNative);
+                    leafNative.RequiredEffects.Clear();
+                    _poolHashSet.Release(leafNative.RequiredEffects);
+                }
+                
+                _tempLeafPool.Release(startNode);
             }
 
             Debug.LogWarning("No plan found for any goal");
@@ -97,7 +114,7 @@ namespace GOAP
 
                     var newCost = currentNode.Cost + action.Cost;
                     
-                    var newNode = _pool.Get();
+                    var newNode = _tempLeafPool.Get();
                     newNode.InitializeLeaf(action, newEffects, newCost, action.Name);
                     
                     currentNode.AddChild(newNode);
@@ -191,5 +208,21 @@ namespace GOAP
                 _actionStack.Push(cheapestLeaf);
             }
         }
+        
+        private void BuildAllLeafs(TempLeaf goalNode)
+        {
+            _actionStack.Clear();
+            CollectAllDescendants(goalNode);
+        }
+
+        private void CollectAllDescendants(TempLeaf node)
+        {
+            foreach (var child in node.Children)
+            {
+                _actionStack.Push(child);
+                CollectAllDescendants(child);
+            }
+        }
+        
     }
 }

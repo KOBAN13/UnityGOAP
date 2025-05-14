@@ -53,6 +53,11 @@ namespace GOAP
         private IBTDebugger _debugger;
         private GenericClassPool<TempLeaf> _tempLeafPool;
         private CollectionPool<HashSet<AgentBelief>> _poolHashSet;
+
+        public Action<TempLeaf> OnTempLeafPoolGet;
+        public Action<TempLeaf> OnTempLeafPoolRelease;
+        public Action<HashSet<AgentBelief>> OnHasSetPoolGet;
+        public Action<HashSet<AgentBelief>> OnHasSetPoolRelease;
         
         [Inject]
         public void Construct(IBTDebugger debugger)
@@ -70,8 +75,13 @@ namespace GOAP
             _setuppers = new Setuppers(_actions, _agentBeliefs, 
                 _goals, _blackboardController);
             
-            _poolHashSet = new CollectionPool<HashSet<AgentBelief>>(null, null, 10);
-            _tempLeafPool = new GenericClassPool<TempLeaf>(null, null, 10);
+            OnTempLeafPoolGet = (a) => Debug.LogError("Отдал темп лифа"); 
+            OnTempLeafPoolRelease = (a) => Debug.LogError("Вернул темп лифа"); 
+            OnHasSetPoolGet = (a) => Debug.LogError("Отдал хас сет"); 
+            OnHasSetPoolRelease = (a) => Debug.LogError("Вернул хас сет");
+            
+            _poolHashSet = new CollectionPool<HashSet<AgentBelief>>(OnHasSetPoolGet, OnHasSetPoolRelease, 10);
+            _tempLeafPool = new GenericClassPool<TempLeaf>( OnTempLeafPoolGet, OnTempLeafPoolRelease, 10);
             
             _goapPlanner = new GoapPlannerAStar(_poolHashSet, _tempLeafPool);
             
