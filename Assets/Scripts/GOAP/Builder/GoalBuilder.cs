@@ -1,6 +1,4 @@
-﻿using Unity.Collections;
-
-namespace GOAP
+﻿namespace GOAP
 {
     public class GoalBuilder
     {

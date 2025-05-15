@@ -1,10 +1,12 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using BehaviourTree;
+using BlackboardScripts;
 using Customs;
 
 namespace GOAP
 {
-    public class AgentAction
+    public struct AgentAction : IEquatable<AgentAction>, IComparable<AgentAction>
     {
         public string Name { get; private set; }
         public float Cost { get; private set; }
@@ -69,5 +71,24 @@ namespace GOAP
         {
             Cost = (baseCost / goalPriority) + (time * timeFactor) + (resources * resourceFactor) + (energy * energyFactor);
         }
+
+        #region IEquatableAndIComparable
+        public int CompareTo(AgentAction other) => string.Compare(Name, other.Name, StringComparison.OrdinalIgnoreCase);
+        
+        public static bool operator >(AgentAction a, AgentAction b) => a.CompareTo(b) > 0;
+        public static bool operator <(AgentAction a, AgentAction b) => a.CompareTo(b) < 0;
+        public static bool operator >=(AgentAction a, AgentAction b) => a.CompareTo(b) >= 0;
+        public static bool operator <=(AgentAction a, AgentAction b) => a.CompareTo(b) <= 0;
+        
+        public bool Equals(AgentAction other) => Name == other.Name;
+
+        public override bool Equals(object obj) => obj is AgentAction other && Equals(other);
+
+        public override int GetHashCode() => Name.ComputeHash();
+
+        public static bool operator ==(AgentAction a, AgentAction b) => a.Equals(b);
+        public static bool operator !=(AgentAction a, AgentAction b) => !a.Equals(b);
+
+        #endregion
     }
 }

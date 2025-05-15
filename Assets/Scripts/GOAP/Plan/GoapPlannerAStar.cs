@@ -1,10 +1,11 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using BehaviourTree;
+using Customs;
 using GOAP.Pools;
 using Unity.VisualScripting;
-
 using UnityEngine;
+using ZLinq;
 
 namespace GOAP
 {
@@ -30,7 +31,7 @@ namespace GOAP
         public (AgentPlan plan, AgentGoal goal) GetPlan(
             HashSet<AgentAction> availableActions,
             HashSet<AgentGoal> goals,
-            AgentGoal mostRecentGoal = null
+            AgentGoal mostRecentGoal = default
         )
         {
             BuildEffectToActionsMap(availableActions);
@@ -38,16 +39,24 @@ namespace GOAP
             BuildConditionsCache(_worldBeliefs);
             
             var orderedGoals = goals
-                .Where(goal => goal.DesiredEffects.Any(b => !_conditionsCache[b]))
+                .AsValueEnumerable()
+                .Where(
+                    goal => goal.DesiredEffects
+                    .AsValueEnumerable()
+                    .Any(b => !_conditionsCache[b]))
                 .OrderByDescending(goal => goal == mostRecentGoal ? goal.Priority - 0.01f : goal.Priority);
             
             foreach (var goal in orderedGoals)
             {
                 _requiredEffects.Clear();
-                _requiredEffects.AddRange(goal.DesiredEffects.Where(b => !_conditionsCache[b]));
+                _requiredEffects
+                    .AddRange(goal.DesiredEffects
+                        .AsValueEnumerable()
+                        .Where(b => !_conditionsCache[b])
+                        .AsEnumerable());
 
                 var startNode = _tempLeafPool.Get();
-                startNode.InitializeLeaf(null, _requiredEffects, 0f, "Start");
+                startNode.InitializeLeaf(default, _requiredEffects, 0f, "Start");
 
                 if (FindPathAStar(startNode))
                 {
@@ -75,7 +84,7 @@ namespace GOAP
             }
 
             Debug.LogWarning("No plan found for any goal");
-            return (null, null); 
+            return (null, default); 
         }
 
         private bool FindPathAStar(TempLeaf startNode)
@@ -104,7 +113,7 @@ namespace GOAP
 
                 _visited[currentEffect] = currentNode.Cost;
 
-                foreach (var action in GetRelevantActions(currentEffect).OrderBy(a => a.Cost))
+                foreach (var action in GetRelevantActions(currentEffect).AsValueEnumerable().OrderBy(a => a.Cost))
                 {
                     var newEffects = _poolHashSet.Get();
                     newEffects.AddRange(currentEffect);
@@ -181,15 +190,19 @@ namespace GOAP
         private IEnumerable<AgentAction> GetRelevantActions(HashSet<AgentBelief> effects)
         {
             return effects
+                .AsValueEnumerable()
                 .SelectMany(b =>
                     _effectToActionsCache.TryGetValue(b, out var actions) 
                         ? actions 
-                        : Enumerable.Empty<AgentAction>());
+                        : Enumerable.Empty<AgentAction>())
+                .AsEnumerable();
         }
 
         private float Heuristic(HashSet<AgentBelief> effects)
         {
-            return effects.Sum(b =>
+            return effects
+                .AsEnumerable()
+                .Sum(b =>
                 _effectToActionsCache.TryGetValue(b, out var actions)
                     ? actions.Min(a => a.Cost)
                     : float.MaxValue
@@ -202,7 +215,10 @@ namespace GOAP
             
             while (goalNode.Children.Count > 0)
             {
-                var cheapestLeaf = goalNode.Children.OrderBy(leaf => leaf.Cost).First();
+                var cheapestLeaf = goalNode.Children
+                    .AsValueEnumerable()
+                    .OrderBy(leaf => leaf.Cost)
+                    .First();
 
                 goalNode = cheapestLeaf;
                 _actionStack.Push(cheapestLeaf);
@@ -223,6 +239,5 @@ namespace GOAP
                 CollectAllDescendants(child);
             }
         }
-        
     }
 }

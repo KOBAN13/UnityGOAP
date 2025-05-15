@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using GOAP;
 using UnityEngine;
 
-namespace CharacterOrEnemyEffect.Factory
+namespace Helpers.Factory
 {
     public class BeliefFactory
     {
@@ -43,7 +43,5 @@ namespace CharacterOrEnemyEffect.Factory
                 .WithSensor(() => sensor.IsActivate)
                 .BuildBelief());
         }
-
-        //bool InRangeOf(Vector3 pos, float range) => Vector3.Distance(_agent, pos) < range; ///СОМНИТЕЛЬНО, ПОЗЖЕ ПЕРЕДЕЛАТЬ
     }
 }

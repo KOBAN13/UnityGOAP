@@ -13,7 +13,7 @@ namespace GOAP
 
         public ActionBuilder WithCost(int goalPriority, float time, float energy, float resources = 1f, float timeFactor = 1f, float resourceFactor = 1f, float energyFactor = 1f)
         {
-            agentAction.CalculateCost(goalPriority, 10f, timeFactor, resourceFactor, energyFactor);
+            agentAction.CalculateCost(goalPriority, time, resources, energy, timeFactor, resourceFactor, energyFactor);
             return this;
         }
         

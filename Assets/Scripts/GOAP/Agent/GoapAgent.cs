@@ -8,8 +8,8 @@ using UnityEngine;
 using UnityEngine.AI;
 using VContainer;
 using Customs;
-using Game.Player.PlayerStateMashine;
 using GOAP.Pools;
+using Helpers.Constants;
 
 namespace GOAP
 {
@@ -51,8 +51,11 @@ namespace GOAP
         private BlackboardController _blackboardController;
         private AgentGoal _agentGoal;
         private IBTDebugger _debugger;
+        
+        [Header("Pools")]
         private GenericClassPool<TempLeaf> _tempLeafPool;
         private CollectionPool<HashSet<AgentBelief>> _poolHashSet;
+        //private GenericClassPool<Selector> _selectorPool; -> стоит ли чуть переделать пул или сделать еще 1 вид?
 
         public Action<TempLeaf> OnTempLeafPoolGet;
         public Action<TempLeaf> OnTempLeafPoolRelease;
@@ -234,7 +237,7 @@ namespace GOAP
             
             _actionPlan = planResult;
             _agentGoal = goalResult;
-            _behaviourTree.SetGoalsState(_agentGoal, null);
+            _behaviourTree.SetGoalsState(_agentGoal, default);
             InitBehaviourTree(_actionPlan.Actions);
         }
     }

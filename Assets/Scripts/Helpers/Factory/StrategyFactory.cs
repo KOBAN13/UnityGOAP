@@ -3,7 +3,7 @@ using BlackboardScripts;
 using GOAP;
 using UnityEngine;
 
-namespace CharacterOrEnemyEffect.Factory
+namespace Helpers.Factory
 {
     public class StrategyFactory
     {

@@ -3,7 +3,7 @@ using System.Threading;
 using BlackboardScripts;
 using Cysharp.Threading.Tasks;
 using DG.Tweening;
-using Game.Player.PlayerStateMashine;
+using Helpers.Constants;
 using UnityEngine;
 using Random = UnityEngine.Random;
 

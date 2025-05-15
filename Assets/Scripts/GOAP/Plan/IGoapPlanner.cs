@@ -7,7 +7,7 @@ namespace GOAP
         public (AgentPlan plan, AgentGoal goal) GetPlan(
             HashSet<AgentAction> agent,
             HashSet<AgentGoal> goals,
-            AgentGoal mostRecentGoal = null
+            AgentGoal mostRecentGoal = default
         );
     }
 }

@@ -1,6 +1,8 @@
-﻿namespace BehaviourTree
+﻿using GOAP.Pools;
+
+namespace BehaviourTree
 {
-    public class Selector : Node
+    public class Selector : Node, IPool
     {
         private int _previouslyChild;
         public override BTNodeStatus Status { get; protected set; }
@@ -9,6 +11,13 @@
         public Selector(string name, int cost, IBTDebugger debugger) : base(cost, debugger)
         {
             Name = name;
+        }
+
+        public void Clear()
+        {
+            _previouslyChild = 0;
+            CurrentChild = 0;
+            Status = BTNodeStatus.Success;
         }
 
         public override BTNodeStatus Process()

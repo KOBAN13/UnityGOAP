@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace GOAP
 {
-    public class AgentBelief
+    public struct AgentBelief
     {
         public string Name { get; private set;  }
         private Func<bool> Condition { get; set; }
@@ -13,6 +13,7 @@ namespace GOAP
         {
             Name = name;
             ObservedLocation = Vector3.zero;
+            Condition = null;
         }
 
         public bool CheckCondition() => Condition.Invoke();

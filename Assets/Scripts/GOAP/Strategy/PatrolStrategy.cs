@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading;
 using BlackboardScripts;
-using Game.Player.PlayerStateMashine;
+using Helpers.Constants;
 using R3;
 using UnityEngine;
 using UnityEngine.AI;
