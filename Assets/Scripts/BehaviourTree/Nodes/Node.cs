@@ -5,14 +5,13 @@ namespace BehaviourTree
     public abstract class Node : INode, IDebuggable
     {
         public abstract string Name { get; protected set; }
-        public IReadOnlyList<INode> Nodes => _nodes;
         public abstract BTNodeStatus Status { get; protected set; }
         public int CurrentChild { get; protected set; }
         public IBTDebugger Debugger { get; }
         public float Cost { get; }
+        public IReadOnlyList<INode> Nodes => _nodes;
         
-        protected readonly List<INode> _nodes = new();
-        public abstract void AddChild(INode node);
+        private readonly List<INode> _nodes = new();
 
         public virtual BTNodeStatus Process()
         {
@@ -29,6 +28,8 @@ namespace BehaviourTree
         {
             Nodes[CurrentChild].Start();
         }
+        
+        public void AddChild(INode node) => _nodes.Add(node);
 
         public void Reset()
         {
@@ -40,6 +41,8 @@ namespace BehaviourTree
             _nodes.Clear();
             DebugReset();
         }
+        
+        
 
         private void DebugReset()
         {

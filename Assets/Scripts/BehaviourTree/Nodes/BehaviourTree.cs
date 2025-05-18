@@ -24,7 +24,7 @@ namespace BehaviourTree
         {
             while (CurrentChild < Nodes.Count)
             {
-                Status = _nodes[CurrentChild].Process();
+                Status = Nodes[CurrentChild].Process();
 
                 if (Status != BTNodeStatus.Success) return Status;
 
@@ -39,7 +39,5 @@ namespace BehaviourTree
             base.Start();
             Debug(this, Name);
         }
-
-        public override void AddChild(INode node) => _nodes.Add(node);
     }
 }

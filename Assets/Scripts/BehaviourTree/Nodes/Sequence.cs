@@ -39,13 +39,11 @@
             Nodes[_previouslyChild].Stop();
         }
 
-        public override void AddChild(INode node) => _nodes.Add(node);
-
         private BTNodeStatus CompleteLeaf()
         {
             _previouslyChild = CurrentChild;
             CurrentChild++;
-            Status = CurrentChild == _nodes.Count ? BTNodeStatus.Success : BTNodeStatus.Running;
+            Status = CurrentChild == Nodes.Count ? BTNodeStatus.Success : BTNodeStatus.Running;
             Stop();
             if (Status != BTNodeStatus.Success)
             {

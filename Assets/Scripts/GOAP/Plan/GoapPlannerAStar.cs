@@ -20,9 +20,9 @@ namespace GOAP
         private readonly PriorityQueue<TempLeaf, float> _openSet = new();
         
         private readonly CollectionPool<HashSet<AgentBelief>> _poolHashSet;
-        private readonly GenericClassPool<TempLeaf> _tempLeafPool;
+        private readonly InstantiablePool<TempLeaf> _tempLeafPool;
         
-        public GoapPlannerAStar(CollectionPool<HashSet<AgentBelief>> poolHashSet, GenericClassPool<TempLeaf> tempLeafPool)
+        public GoapPlannerAStar(CollectionPool<HashSet<AgentBelief>> poolHashSet, InstantiablePool<TempLeaf> tempLeafPool)
         {
             _tempLeafPool = tempLeafPool;
             _poolHashSet = poolHashSet;

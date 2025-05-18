@@ -13,15 +13,13 @@
         public override BTNodeStatus Process()
         {
             Debug(this, Name);
-            
-            switch (Nodes[0].Process())
-            {
-                case BTNodeStatus.Running: return Status = BTNodeStatus.Running;
-                case BTNodeStatus.Failure: return Status = BTNodeStatus.Success;
-                default: return Status = BTNodeStatus.Failure;
-            }
-        }
 
-        public override void AddChild(INode node) => _nodes.Add(node);
+            return Nodes[0].Process() switch
+            {
+                BTNodeStatus.Running => Status = BTNodeStatus.Running,
+                BTNodeStatus.Failure => Status = BTNodeStatus.Success,
+                _ => Status = BTNodeStatus.Failure
+            };
+        }
     }
 }

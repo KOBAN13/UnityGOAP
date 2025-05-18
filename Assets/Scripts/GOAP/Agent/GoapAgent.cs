@@ -53,14 +53,9 @@ namespace GOAP
         private IBTDebugger _debugger;
         
         [Header("Pools")]
-        private GenericClassPool<TempLeaf> _tempLeafPool;
+        private InstantiablePool<TempLeaf> _tempLeafPool;
         private CollectionPool<HashSet<AgentBelief>> _poolHashSet;
-        //private GenericClassPool<Selector> _selectorPool; -> стоит ли чуть переделать пул или сделать еще 1 вид?
-
-        public Action<TempLeaf> OnTempLeafPoolGet;
-        public Action<TempLeaf> OnTempLeafPoolRelease;
-        public Action<HashSet<AgentBelief>> OnHasSetPoolGet;
-        public Action<HashSet<AgentBelief>> OnHasSetPoolRelease;
+        private FixedObjectPool<INode> _nodesBehaviourTree;
         
         [Inject]
         public void Construct(IBTDebugger debugger)
@@ -78,13 +73,16 @@ namespace GOAP
             _setuppers = new Setuppers(_actions, _agentBeliefs, 
                 _goals, _blackboardController);
             
-            OnTempLeafPoolGet = (a) => Debug.LogError("Отдал темп лифа"); 
-            OnTempLeafPoolRelease = (a) => Debug.LogError("Вернул темп лифа"); 
-            OnHasSetPoolGet = (a) => Debug.LogError("Отдал хас сет"); 
-            OnHasSetPoolRelease = (a) => Debug.LogError("Вернул хас сет");
+            var listSelectors = new List<INode>();
+
+            for (var i = 0; i < 10; i++)
+            {
+                listSelectors.Add(new Selector("Selector Leafs", 0, _debugger));
+            }
             
-            _poolHashSet = new CollectionPool<HashSet<AgentBelief>>(OnHasSetPoolGet, OnHasSetPoolRelease, 10);
-            _tempLeafPool = new GenericClassPool<TempLeaf>( OnTempLeafPoolGet, OnTempLeafPoolRelease, 10);
+            _poolHashSet = new CollectionPool<HashSet<AgentBelief>>(null, null, 10);
+            _tempLeafPool = new InstantiablePool<TempLeaf>(null, null, 10);
+            _nodesBehaviourTree = new FixedObjectPool<INode>(listSelectors, () => new Selector("Selector Leafs", 0, _debugger));
             
             _goapPlanner = new GoapPlannerAStar(_poolHashSet, _tempLeafPool);
             
@@ -175,8 +173,7 @@ namespace GOAP
 
         private void InitBehaviourTree(Stack<TempLeaf> leafs)
         {
-            var sequencePlan = new Selector("Selector Leafs", 0, _debugger);
-
+            var sequencePlan = _nodesBehaviourTree.Get();
             var countLeafs = leafs.Count;
             
             for (var i = 0; i < countLeafs; i++)
@@ -226,6 +223,12 @@ namespace GOAP
             
             _behaviourTree.Reset();
             _behaviourTree.SetGoalsState(default, _agentGoal);
+
+            foreach (var node in _behaviourTree.Nodes)
+            {
+                _nodesBehaviourTree.Release(node);
+            }
+            
             _actionPlan = default;
         }
 

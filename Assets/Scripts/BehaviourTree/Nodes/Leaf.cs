@@ -10,10 +10,9 @@ namespace BehaviourTree
         public override BTNodeStatus Status { get; protected set; }
         public sealed override string Name { get; protected set; }
         public bool IsLeafDead => Nodes.Count == 0 && _agentAction.Equals(default);
-        private readonly AgentAction _agentAction;
         public readonly HashSet<AgentBelief> RequiredEffects;
         
-        public override void AddChild(INode node) => _nodes.Add(node);
+        private AgentAction _agentAction;
 
         public override BTNodeStatus Process()
         {
