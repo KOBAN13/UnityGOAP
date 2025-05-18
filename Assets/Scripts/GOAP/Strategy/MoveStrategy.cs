@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Threading;
 using BlackboardScripts;
 using Helpers.Constants;
 using UnityEngine;
@@ -11,7 +10,6 @@ namespace GOAP
     {
         public bool CanPerform => !Complete;
         public bool Complete => _agent.remainingDistance <= 2f && !_agent.pathPending;
-        public CancellationTokenSource CancellationTokenSource { get; private set; } = null;
         
         private readonly NavMeshAgent _agent;
         private readonly Func<Vector3> _destination;

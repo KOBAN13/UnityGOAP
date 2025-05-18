@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Threading;
 using BlackboardScripts;
 using Helpers.Constants;
 using R3;
@@ -10,16 +9,16 @@ namespace GOAP
 {
     public class PatrolStrategy : IActionStrategy
     {
+        public bool CanPerform => !Complete;
+        public bool Complete { get; private set; }
+        
         private readonly NavMeshAgent _agent;
         private readonly Transform _entry;
         private readonly float _duration;
         private bool _isPathCalculated;
-        private CompositeDisposable _disposable;
+        private readonly CompositeDisposable _disposable = new();
         private readonly NavGrid _navGrid;
         private readonly Subject<Unit> _timerCompletedSubject = new();
-        public bool CanPerform => !Complete;
-        public bool Complete { get; private set; }
-        public CancellationTokenSource CancellationTokenSource { get; private set; } = new();
 
         public PatrolStrategy(BlackboardController blackboardController, float duration)
         {
@@ -32,7 +31,6 @@ namespace GOAP
         public void Start()
         {
             Complete = false;
-            _disposable = new CompositeDisposable();
 
             Observable.Timer(TimeSpan.FromSeconds(_duration))
                 .Do(_ => Complete = true)

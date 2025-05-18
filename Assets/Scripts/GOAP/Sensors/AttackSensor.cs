@@ -8,10 +8,6 @@ namespace GOAP
     [RequireComponent(typeof(SphereCollider))]
     public class AttackSensor : MonoBehaviour, ISensor
     {
-        public Vector3 Target => _target ? _target.transform.position : Vector3.zero;
-        public bool IsActivate => _isActiveSensor.Value;
-        public ReadOnlyReactiveProperty<bool> IsActiveSensor => _isActiveSensor;
-        
         [SerializeField] private float _radiusDetect;
         [SerializeField] private SphereCollider _trigger;
         
@@ -19,6 +15,10 @@ namespace GOAP
         private Vector3 _lastKnownPosition;
         private readonly CompositeDisposable _compositeDisposable = new();
         private readonly ReactiveProperty<bool> _isActiveSensor = new();
+        
+        public Vector3 Target => _target ? _target.transform.position : Vector3.zero;
+        public bool IsActivate => _isActiveSensor.Value;
+        public ReadOnlyReactiveProperty<bool> IsActiveSensor => _isActiveSensor;
         
 
         private void OnTriggerEnter(Collider other)

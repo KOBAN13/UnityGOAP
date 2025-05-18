@@ -11,11 +11,13 @@ namespace GOAP
 {
     public class IdleStrategy : IActionStrategy
     {
-        private readonly float _duration;
-        private readonly Transform _enemy;
         public bool CanPerform => true;
         public bool Complete { get; private set; }
-        public CancellationTokenSource CancellationTokenSource { get; private set; }
+        
+        private readonly float _duration;
+        private readonly Transform _enemy;
+        
+        private readonly CancellationTokenSource _cancellationTokenSource = new();
 
         public IdleStrategy(float duration, BlackboardController blackboardController)
         {
@@ -25,13 +27,13 @@ namespace GOAP
 
         public async void Start()
         {
-            CancellationTokenSource = new CancellationTokenSource();
             Complete = false;
-            for (int i = 0; i < 3; i++)
+            
+            for (var i = 0; i < 3; i++)
             {
                 await _enemy.DORotateQuaternion(Quaternion.Euler(0f, Random.Range(0f, 45f), 0f), _duration / 3)
-                    .WithCancellation(CancellationTokenSource.Token).SuppressCancellationThrow();
-                await UniTask.Delay(TimeSpan.FromSeconds(1f), cancellationToken: CancellationTokenSource.Token).SuppressCancellationThrow();
+                    .WithCancellation(_cancellationTokenSource.Token).SuppressCancellationThrow();
+                await UniTask.Delay(TimeSpan.FromSeconds(1f), cancellationToken: _cancellationTokenSource.Token).SuppressCancellationThrow();
             }
 
             Complete = true;
@@ -39,7 +41,7 @@ namespace GOAP
 
         public void Stop()
         {
-            CancellationTokenSource?.Cancel();
+            _cancellationTokenSource?.Cancel();
             Complete = true;
         }
     }

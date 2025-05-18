@@ -7,16 +7,15 @@ namespace GOAP
 {
     public class EnemyVisionSensor : MonoBehaviour, ISensor
     {
-        [field: SerializeField] private EyesSensor _eyesSensor;
-        public Vector3 Target { get; }
+        [SerializeField] private EyesSensor _eyesSensor;
+        public Vector3 Target { get; private set; }
         public bool IsActivate => _isActiveSensor.Value;
-        private readonly ReactiveProperty<bool> _isActiveSensor = new();
 
         private bool _isFindEnemy;
-        private CompositeDisposable _compositeDisposable = new();
+        private readonly CompositeDisposable _compositeDisposable = new();
+        private readonly ReactiveProperty<bool> _isActiveSensor = new();
         private IDisposable _disposable;
         
-
         private void OnEnable()
         {
             _eyesSensor.IsActiveSensor.Subscribe(CheckEnemyVision).AddTo(_compositeDisposable);
@@ -37,6 +36,7 @@ namespace GOAP
             }
 
             if (!_isFindEnemy || isActive != false) return;
+            
             Debug.LogWarning("Find Enemy");
             _isActiveSensor.Value = true;
             _isFindEnemy = false;

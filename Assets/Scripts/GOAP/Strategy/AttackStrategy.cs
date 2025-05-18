@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Threading;
 using R3;
 using UnityEngine;
 
@@ -9,15 +8,13 @@ namespace GOAP
     {
         public bool CanPerform => true;
         public bool Complete { get; private set; }
-        public CancellationTokenSource CancellationTokenSource { get; private set; } = null;
 
-        private CompositeDisposable _disposable;
+        private readonly CompositeDisposable _disposable = new();
         private readonly Subject<Unit> _timerCompletedSubject = new();
 
         public void Start()
         {
             Complete = false;
-            _disposable = new CompositeDisposable();
             
             Observable.Interval(TimeSpan.FromSeconds(1f))
                 .Subscribe(_ => Attack()).AddTo(_disposable);

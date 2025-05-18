@@ -10,9 +10,11 @@ namespace GOAP
         [SerializeField] private float _timeAggression;
         [SerializeField] private float _radiusDetect;
         [SerializeField] private SphereCollider _trigger;
+        
         public Vector3 Target { get; private set; }
         public ReadOnlyReactiveProperty<bool> IsActiveSensor => _isActiveSensor;
         public bool IsActivate => _isActiveSensor.Value;
+        
         private readonly ReactiveProperty<bool> _isActiveSensor = new();
         private readonly CompositeDisposable _compositeDisposable = new();
         

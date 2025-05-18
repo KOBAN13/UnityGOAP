@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Threading;
 using BlackboardScripts;
 using Helpers.Constants;
 using R3;
@@ -12,18 +11,17 @@ namespace GOAP
     {
         public bool CanPerform => !Complete;
         public bool Complete { get; private set; }
-        public CancellationTokenSource CancellationTokenSource { get; }
         
-        private float _searchRadius;
-        private float _timeToSearch;
-        private float _timeToStopSearch;
-        private int _countIteration;
-        private CompositeDisposable _disposable = new();
-        private Transform _unit;
-        private Transform _playerTransform;
-        private NavMeshAgent _navMesh;
-        
+        private readonly float _searchRadius;
+        private readonly float _timeToSearch;
+        private readonly float _timeToStopSearch;
+        private readonly int _countIteration;
+        private readonly Transform _unit;
+        private readonly Transform _playerTransform;
+        private readonly NavMeshAgent _navMesh;
         private readonly Subject<Unit> _timerCompletedSubject = new();
+        private readonly CompositeDisposable _disposable = new();
+        
         private bool _playerKnown;
         private Vector3 _lastKnownPlayerPosition;
 
@@ -42,7 +40,6 @@ namespace GOAP
         public void Start()
         {
             ClearDisposable();
-            _disposable = new CompositeDisposable();
             
             Complete = false;
             

@@ -1,6 +1,4 @@
-﻿using System;
-using System.Threading;
-using BlackboardScripts;
+﻿using BlackboardScripts;
 using Helpers.Constants;
 using UnityEngine;
 using UnityEngine.AI;
@@ -11,7 +9,6 @@ namespace GOAP
     {
         public bool CanPerform => !Complete;
         public bool Complete => _agent.remainingDistance <= 1f && _agent.pathPending == false;
-        public CancellationTokenSource CancellationTokenSource { get; } = null;
 
         private readonly NavMeshAgent _agent;
         private readonly Transform _playerTransform;
