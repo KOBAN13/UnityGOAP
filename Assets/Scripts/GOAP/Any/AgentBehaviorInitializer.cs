@@ -7,7 +7,7 @@ using UnityEngine;
 
 namespace GOAP
 {
-    public class Setuppers
+    public class AgentBehaviorInitializer
     {
         private readonly HashSet<AgentAction> _actions;
         private readonly Dictionary<string, AgentBelief> _agentBeliefs;
@@ -15,7 +15,7 @@ namespace GOAP
         private readonly BlackboardController _blackboard;
         private readonly StrategyFactory _strategyFactory = new();
         
-        public Setuppers(HashSet<AgentAction> actions, 
+        public AgentBehaviorInitializer(HashSet<AgentAction> actions, 
             Dictionary<string, AgentBelief> agentBeliefs,
             HashSet<AgentGoal> goals, BlackboardController blackboardController)
         {

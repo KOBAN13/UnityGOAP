@@ -46,7 +46,7 @@ namespace GOAP
         private readonly CompositeDisposable _disposable = new();
         private IGoapPlanner _goapPlanner;
         private AgentPlan _actionPlan;
-        private Setuppers _setuppers;
+        private AgentBehaviorInitializer _agentBehaviorInitializer;
         private BehaviourTree.BehaviourTree _behaviourTree;
         private BlackboardController _blackboardController;
         private AgentGoal _agentGoal;
@@ -70,7 +70,7 @@ namespace GOAP
             SetupDataToBlackboard();
             _behaviourTree = new BehaviourTree.BehaviourTree("Agent Tree", 0, _debugger);
             
-            _setuppers = new Setuppers(_actions, _agentBeliefs, 
+            _agentBehaviorInitializer = new AgentBehaviorInitializer(_actions, _agentBeliefs, 
                 _goals, _blackboardController);
             
             var listSelectors = new List<INode>();
@@ -86,9 +86,9 @@ namespace GOAP
             
             _goapPlanner = new GoapPlannerAStar(_poolHashSet, _tempLeafPool);
             
-            _setuppers.SetupBeliefs();
-            _setuppers.SetupActions();
-            _setuppers.SetupGoals();
+            _agentBehaviorInitializer.SetupBeliefs();
+            _agentBehaviorInitializer.SetupActions();
+            _agentBehaviorInitializer.SetupGoals();
         }
 
         private void OnEnable()

@@ -30,7 +30,7 @@ namespace BlackboardScripts
         public int CompareTo(BlackboardKey other)
         {
             var hashCompare = _hashedKey.CompareTo(other._hashedKey);
-            return hashCompare != 0 ? hashCompare : _name.CompareTo(other._name);
+            return hashCompare != 0 ? hashCompare : string.Compare(_name, other._name, StringComparison.Ordinal);
         }
     }
 }
