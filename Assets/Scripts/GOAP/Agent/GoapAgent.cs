@@ -53,9 +53,7 @@ namespace GOAP
         private IBTDebugger _debugger;
         
         [Header("Pools")]
-        private InstantiablePool<TempLeaf> _tempLeafPool;
-        private CollectionPool<HashSet<AgentBelief>> _poolHashSet;
-        private FixedObjectPool<INode> _nodesBehaviourTree;
+        private AgentPools _agentsPool;
         
         [Inject]
         public void Construct(IBTDebugger debugger)
@@ -73,18 +71,9 @@ namespace GOAP
             _agentBehaviorInitializer = new AgentBehaviorInitializer(_actions, _agentBeliefs, 
                 _goals, _blackboardController);
             
-            var listSelectors = new List<INode>();
-
-            for (var i = 0; i < 10; i++)
-            {
-                listSelectors.Add(new Selector("Selector Leafs", 0, _debugger));
-            }
+            _agentsPool = new AgentPools(_debugger);
             
-            _poolHashSet = new CollectionPool<HashSet<AgentBelief>>(null, null, 10);
-            _tempLeafPool = new InstantiablePool<TempLeaf>(null, null, 10);
-            _nodesBehaviourTree = new FixedObjectPool<INode>(listSelectors, () => new Selector("Selector Leafs", 0, _debugger));
-            
-            _goapPlanner = new GoapPlannerAStar(_poolHashSet, _tempLeafPool);
+            _goapPlanner = new GoapPlannerAStar(_agentsPool.PoolHashSet, _agentsPool.TempLeafPool);
             
             _agentBehaviorInitializer.SetupBeliefs();
             _agentBehaviorInitializer.SetupActions();
@@ -173,7 +162,10 @@ namespace GOAP
 
         private void InitBehaviourTree(Stack<TempLeaf> leafs)
         {
-            var sequencePlan = _nodesBehaviourTree.Get();
+            var sequencePlan = _agentsPool.NodesBehaviourTree.Get();
+            var tempLeafPool = _agentsPool.TempLeafPool;
+            var hashSetPool = _agentsPool.PoolHashSet;
+            
             var countLeafs = leafs.Count;
             
             for (var i = 0; i < countLeafs; i++)
@@ -184,9 +176,9 @@ namespace GOAP
                     leafNative.Cost, leafNative.Name, 
                     _debugger);
                 
-                _tempLeafPool.Release(leafNative);
+                tempLeafPool.Release(leafNative);
                 leafNative.RequiredEffects.Clear();
-                _poolHashSet.Release(leafNative.RequiredEffects);
+                hashSetPool.Release(leafNative.RequiredEffects);
                 sequencePlan.AddChild(leaf);
             }
             
@@ -226,7 +218,7 @@ namespace GOAP
 
             foreach (var node in _behaviourTree.Nodes)
             {
-                _nodesBehaviourTree.Release(node);
+                _agentsPool.NodesBehaviourTree.Release(node);
             }
             
             _actionPlan = default;
