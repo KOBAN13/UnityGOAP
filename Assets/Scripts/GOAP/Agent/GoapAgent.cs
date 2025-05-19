@@ -8,9 +8,9 @@ using UnityEngine;
 using UnityEngine.AI;
 using VContainer;
 using Customs;
+using GOAP.Animation;
 using GOAP.Pools;
 using Helpers.Constants;
-using Helpers.SerializedDictionary;
 
 namespace GOAP
 {
@@ -51,15 +51,17 @@ namespace GOAP
         private BehaviourTree.BehaviourTree _behaviourTree;
         private BlackboardController _blackboardController;
         private AgentGoal _agentGoal;
+        private AnimationBrain _animationBrain;
         private IBTDebugger _debugger;
         
         [Header("Pools")]
         private AgentPools _agentsPool;
         
         [Inject]
-        public void Construct(IBTDebugger debugger)
+        public void Construct(IBTDebugger debugger, AnimationBrain animationBrain)
         {
             _debugger = debugger;
+            _animationBrain = animationBrain;
         }
 
         private void Awake()

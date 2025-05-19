@@ -3,7 +3,7 @@ using System.Linq;
 using ObservableCollections;
 using R3;
 
-namespace BehaviourTree
+namespace BehaviourTree.Debagger
 {
     public class BTDebugger : IBTDebugger
     {

@@ -1,4 +1,6 @@
 ﻿using BehaviourTree;
+using BehaviourTree.Debagger;
+using GOAP.Animation;
 using VContainer;
 using VContainer.Unity;
 
@@ -9,6 +11,7 @@ namespace DI
         protected override void Configure(IContainerBuilder builder)
         {
             builder.Register<IBTDebugger, BTDebugger>(Lifetime.Singleton);
+            builder.Register<AnimationBrain>(Lifetime.Singleton);
         }
     }
 }
