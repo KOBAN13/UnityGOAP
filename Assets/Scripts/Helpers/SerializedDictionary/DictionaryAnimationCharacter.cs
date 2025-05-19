@@ -1,8 +1,10 @@
-﻿using GOAP.Animation;
+﻿using System;
+using GOAP.Animation;
 using GOAP.Animation.Enums;
 
-namespace Blackboard.SerializeableDictionary
+namespace Helpers.SerializedDictionary
 {
+    [Serializable]
     public class DictionaryAnimationCharacter : UnitySerializedDictionary<MovementAnimationType, MotionClipTransition>
     {
         
