@@ -33,12 +33,14 @@ namespace GOAP
         {
             Complete = false;
             
-            _animationBrain.PlayAnimation(EMovementAnimationType.Idle);;
-            
             for (var i = 0; i < 3; i++)
             {
+                _animationBrain.PlayForce(new AnimationRequest(EMovementAnimationType.TurnRight, true, EAnimationLayer.Default, 0.8f));
+                _animationBrain.SetDefaultAnimation(EMovementAnimationType.Idle);
+                
                 await _enemy.DORotateQuaternion(Quaternion.Euler(0f, Random.Range(0f, 45f), 0f), _duration / 3)
                     .WithCancellation(_cancellationTokenSource.Token).SuppressCancellationThrow();
+                
                 await UniTask.Delay(TimeSpan.FromSeconds(1f), cancellationToken: _cancellationTokenSource.Token).SuppressCancellationThrow();
             }
 
