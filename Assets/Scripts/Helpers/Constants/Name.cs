@@ -2,7 +2,7 @@
 {
     public class NameAIKeys
     {
-        public static readonly string Animator = "AIAnimator";
+        public static string AnimationBrain  => "AnimationBrain";
         public static readonly string Agent = "NavMeshAgent";
         public static readonly string HealthAI = "Health";
         public static readonly string FoodPoint = "FoodPoint";

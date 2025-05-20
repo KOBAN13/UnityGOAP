@@ -37,7 +37,6 @@ namespace GOAP
         [SerializeField] private float _stamina;
         
         [Header("Agent Links")]
-        [SerializeField] private Animator _animator;
         private NavMeshAgent _navMeshAgent;
         
         [Header("Goap Scripts")]
@@ -101,7 +100,6 @@ namespace GOAP
             _blackboardController.SetValue<ISensor>(NameExperts.HitSensor, _hitSensor);
             _blackboardController.SetValue<ISensor>(NameExperts.AttackSensor, _attackSensor);
             _blackboardController.SetValue<ISensor>(NameExperts.EnemyVisionSensor, _enemyVisionSensor);
-            _blackboardController.SetValue(NameAIKeys.Animator, _animator);
             _blackboardController.SetValue(NameAIKeys.Agent, _navMeshAgent);
             _blackboardController.SetValue(NameAIKeys.HealthAI, _health);
             _blackboardController.SetValue(NameAIKeys.FoodPoint, _foodCort);
@@ -112,6 +110,7 @@ namespace GOAP
             _blackboardController.SetValue(NameAIKeys.SearchEnemyRadius, 5f);
             _blackboardController.SetValue(NameAIKeys.TimeToSearchEnemy, 3f);
             _blackboardController.SetValue(NameAIKeys.CountIterationSearchEnemy, 3);
+            _blackboardController.SetValue(NameAIKeys.AnimationBrain, _animationBrain);
             
             _blackboardController.SetValue<Func<bool>>(NameExperts.NothingPredicate, () => false);
             _blackboardController.SetValue<Func<bool>>(NameExperts.AttackPredicate, () => false);

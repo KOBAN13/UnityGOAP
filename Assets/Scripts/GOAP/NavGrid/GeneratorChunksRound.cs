@@ -1,6 +1,7 @@
 using System;
 using UnityEngine;
 
+//TODO REFACTOR NAV GRID ALL
 public class GeneratorChunksRound
 {
     private readonly PointMap _map;

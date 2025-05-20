@@ -3,6 +3,8 @@ using System.Threading;
 using BlackboardScripts;
 using Cysharp.Threading.Tasks;
 using DG.Tweening;
+using GOAP.Animation;
+using GOAP.Animation.Enums;
 using Helpers.Constants;
 using UnityEngine;
 using Random = UnityEngine.Random;
@@ -16,18 +18,22 @@ namespace GOAP
         
         private readonly float _duration;
         private readonly Transform _enemy;
+        private readonly AnimationBrain _animationBrain;
         
         private readonly CancellationTokenSource _cancellationTokenSource = new();
 
         public IdleStrategy(float duration, BlackboardController blackboardController)
         {
             _duration = duration + 3f;
-            _enemy = blackboardController.GetValue<Transform>(NameAIKeys.TransformAI);;
+            _enemy = blackboardController.GetValue<Transform>(NameAIKeys.TransformAI);
+            _animationBrain = blackboardController.GetValue<AnimationBrain>(NameAIKeys.AnimationBrain);
         }
 
         public async void Start()
         {
             Complete = false;
+            
+            _animationBrain.PlayAnimation(EMovementAnimationType.Idle);;
             
             for (var i = 0; i < 3; i++)
             {
