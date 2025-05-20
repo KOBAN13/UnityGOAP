@@ -1,4 +1,5 @@
-﻿using GOAP.Animation.Impl;
+﻿using GOAP.Animation;
+using GOAP.Animation.Impl;
 using GOAP.Animation.Interface;
 using UnityEngine;
 using VContainer;
@@ -12,9 +13,19 @@ namespace Config.Installers
 
         protected override void Configure(IContainerBuilder builder)
         {
-            builder
+            BindCharacterAnimancerParameters(builder);
+        }
+        
+        private void BindCharacterAnimancerParameters(IContainerBuilder container)
+        {
+            container
                 .RegisterInstance(_characterAnimanсerParameters)
                 .As<ICharacterAnimanсerParameters>();
+            
+            container
+                .Register<AnimationBrain>(Lifetime.Singleton)
+                .AsImplementedInterfaces()
+                .AsSelf();
         }
     }
 }

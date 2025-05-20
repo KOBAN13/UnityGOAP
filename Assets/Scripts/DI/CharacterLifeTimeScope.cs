@@ -11,7 +11,7 @@ namespace DI
         
         protected override void Configure(IContainerBuilder builder)
         {
-            builder.RegisterInstance(_playerComponents);
+            builder.RegisterComponent(_playerComponents);
 
             builder.Register<NewInputSystem>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();
             builder.Register<InputSystemPC>(Lifetime.Singleton).AsImplementedInterfaces().AsSelf();

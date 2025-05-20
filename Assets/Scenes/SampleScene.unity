@@ -625,7 +625,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   parentReference:
-    TypeName: 
+    TypeName: Config.Installers.GameSettingsInstallerScope
   autoRun: 1
   autoInjectGameObjects:
   - {fileID: 184091908}
@@ -660,7 +660,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   parentReference:
-    TypeName: DI.GoapLifeTimeScope
+    TypeName: 
   autoRun: 1
   autoInjectGameObjects: []
   "_characterAniman\u0441erParameters": {fileID: 11400000, guid: 7db33423a76233b47a36c8abc7d88415, type: 2}
