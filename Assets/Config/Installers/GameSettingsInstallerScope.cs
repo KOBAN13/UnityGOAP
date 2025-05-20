@@ -1,4 +1,5 @@
-﻿using GOAP.Animation;
+﻿using Animancer;
+using GOAP.Animation;
 using GOAP.Animation.Impl;
 using GOAP.Animation.Interface;
 using UnityEngine;
@@ -10,6 +11,7 @@ namespace Config.Installers
     public class GameSettingsInstallerScope : LifetimeScope
     {
         [SerializeField] private CharacterAnimanсerParameters _characterAnimanсerParameters;
+        [SerializeField] private AnimancerComponent _animancerComponent;
 
         protected override void Configure(IContainerBuilder builder)
         {
@@ -21,6 +23,11 @@ namespace Config.Installers
             container
                 .RegisterInstance(_characterAnimanсerParameters)
                 .As<ICharacterAnimanсerParameters>();
+            
+            container
+                .RegisterInstance(_animancerComponent)
+                .AsImplementedInterfaces()
+                .AsSelf();
             
             container
                 .Register<AnimationBrain>(Lifetime.Singleton)

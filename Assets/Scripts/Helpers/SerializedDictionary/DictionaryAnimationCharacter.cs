@@ -5,7 +5,7 @@ using GOAP.Animation.Enums;
 namespace Helpers.SerializedDictionary
 {
     [Serializable]
-    public class DictionaryAnimationCharacter : UnitySerializedDictionary<MovementAnimationType, MotionClipTransition>
+    public class DictionaryAnimationCharacter : UnitySerializedDictionary<EMovementAnimationType, MotionClipTransition>
     {
         
     }
