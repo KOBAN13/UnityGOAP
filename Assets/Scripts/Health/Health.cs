@@ -13,9 +13,12 @@ namespace Health
         private float _amountHealthPercentage = 1f;
         private const float TransferFromInterest = 100f;
         private CancellationTokenSource _cancellationTokenSource;
+        
+        private readonly OperationWithHealth _operationWithHealth;
 
-        public Health(float health)
+        public Health(OperationWithHealth operationWithHealth, float health)
         {
+            _operationWithHealth = operationWithHealth;
             MaxHealth = CurrentHealth = health;
         }
 
@@ -28,6 +31,8 @@ namespace Health
             _amountHealthPercentage -= value / MaxHealth;
             
             if (CurrentHealth != 0f) return;
+            
+            _operationWithHealth.InvokeDead();
         }
 
         public async UniTaskVoid AddHealth(float value)
