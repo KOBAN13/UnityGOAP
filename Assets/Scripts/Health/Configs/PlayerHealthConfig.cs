@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace Game.Core.Health
+namespace Health.Configs
 {
     [CreateAssetMenu(fileName = nameof(PlayerHealthConfig), menuName = "Configs" + "/" + nameof(PlayerHealthConfig))]
     public class PlayerHealthConfig : HealthConfig

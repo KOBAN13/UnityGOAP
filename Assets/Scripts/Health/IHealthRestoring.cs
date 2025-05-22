@@ -1,4 +1,4 @@
-﻿namespace Game.Core.Health
+﻿namespace Health
 {
     public interface IHealthRestoring
     {

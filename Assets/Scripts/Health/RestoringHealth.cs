@@ -2,11 +2,11 @@
 using System.Threading;
 using Cysharp.Threading.Tasks;
 using DG.Tweening;
-using Game.Core.Health;
+using Health.Configs;
 using R3;
 using UnityEngine;
 
-namespace Game.Core.Health
+namespace Health
 {
     public class RestoringHealth<T> : IHealthStats, IHealthRestoring, IDisposable where T : MonoBehaviour
     {
@@ -22,10 +22,9 @@ namespace Game.Core.Health
         
         private readonly IHealthStats _healthStats;
         private readonly PlayerHealthConfig _playerHealthConfig;
-        private readonly OperationWithHealth<T> _operationWithHealth;
         private readonly CompositeDisposable _compositeDisposable = new();
         private const float TransferToInterest = 0.01f;
-        public CancellationTokenSource CancellationTokenSource { get; private set; }
+        private CancellationTokenSource _cancellationTokenSource;
 
         public RestoringHealth(IHealthStats healthStats, PlayerHealthConfig playerHealthConfig)
         {
@@ -41,7 +40,7 @@ namespace Game.Core.Health
             var restoringHealth = MaxHealth * _playerHealthConfig.CoefficientRecoveryHealth * TransferToInterest;
             IsHealthRestoringAfterHitEnemy = true;
             _previouslyValue = _healthStats.CurrentHealth;
-            CancellationTokenSource = new CancellationTokenSource();
+            _cancellationTokenSource = new CancellationTokenSource();
 
             if (IsHealthRestoringAfterDieEnemy)
                 _healthStats.AddHealth(MaxHealth * _playerHealthConfig.CoefficientRecoveryHealthAfterEnemyDead *
@@ -65,9 +64,9 @@ namespace Game.Core.Health
 
             try
             {
-                await tcs.Task.AttachExternalCancellation(CancellationTokenSource.Token);
+                await tcs.Task.AttachExternalCancellation(_cancellationTokenSource.Token);
                 
-                await UniTask.Delay(TimeSpan.FromSeconds(0.7f), cancellationToken: CancellationTokenSource.Token);
+                await UniTask.Delay(TimeSpan.FromSeconds(0.7f), cancellationToken: _cancellationTokenSource.Token);
             }
             
             catch (OperationCanceledException)

@@ -1,20 +1,18 @@
 ﻿using System;
 using System.Threading;
 using Cysharp.Threading.Tasks;
-using R3;
 using UnityEngine;
 
-namespace Game.Core.Health
+namespace Health
 {
     public class Health : IHealthStats, IDisposable
     {
         public float MaxHealth { get; }
         public float CurrentHealth { get; private set; }
         
-        private Subject<Unit> _onCharacterDie;
         private float _amountHealthPercentage = 1f;
         private const float TransferFromInterest = 100f;
-        public CancellationTokenSource CancellationTokenSource { get; private set; }
+        private CancellationTokenSource _cancellationTokenSource;
 
         public Health(float health)
         {
@@ -30,8 +28,6 @@ namespace Game.Core.Health
             _amountHealthPercentage -= value / MaxHealth;
             
             if (CurrentHealth != 0f) return;
-            
-            _onCharacterDie.OnNext(Unit.Default);
         }
 
         public async UniTaskVoid AddHealth(float value)
@@ -57,7 +53,7 @@ namespace Game.Core.Health
 
         public void Dispose()
         {
-            CancellationTokenSource?.Dispose();
+            _cancellationTokenSource?.Dispose();
         }
     }
 }

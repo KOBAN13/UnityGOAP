@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace Game.Core.Health
+namespace Health.Configs
 {
     public class HealthConfig : ScriptableObject
     {
