@@ -19,6 +19,8 @@ namespace GOAP
         private readonly float _duration;
         private readonly Transform _enemy;
         private readonly AnimationBrain _animationBrain;
+
+        private const int ITERATION = 4;
         
         private readonly CancellationTokenSource _cancellationTokenSource = new();
 
@@ -33,15 +35,13 @@ namespace GOAP
         {
             Complete = false;
             
-            for (var i = 0; i < 3; i++)
+            _animationBrain.SetDefaultAnimation(EMovementAnimationType.Idle);
+            
+            for (var i = 0; i < ITERATION; i++)
             {
-                _animationBrain.PlayForce(new AnimationRequest(EMovementAnimationType.TurnRight, true, EAnimationLayer.Default, 0.8f));
-                _animationBrain.SetDefaultAnimation(EMovementAnimationType.Idle);
+                _animationBrain.PlayForce(new AnimationRequest(GetRandomMovementAnimationType(), true, EAnimationLayer.Default, 0.8f));
                 
-                await _enemy.DORotateQuaternion(Quaternion.Euler(0f, Random.Range(0f, 45f), 0f), _duration / 3)
-                    .WithCancellation(_cancellationTokenSource.Token).SuppressCancellationThrow();
-                
-                await UniTask.Delay(TimeSpan.FromSeconds(1f), cancellationToken: _cancellationTokenSource.Token).SuppressCancellationThrow();
+                await UniTask.Delay(TimeSpan.FromSeconds(_duration / ITERATION), cancellationToken: _cancellationTokenSource.Token).SuppressCancellationThrow();
             }
 
             Complete = true;
@@ -51,6 +51,13 @@ namespace GOAP
         {
             _cancellationTokenSource?.Cancel();
             Complete = true;
+        }
+        
+        public EMovementAnimationType GetRandomMovementAnimationType()
+        {
+            var randomValue = Random.Range(0, 2);
+            
+            return randomValue == 0 ? EMovementAnimationType.TurnRight : EMovementAnimationType.TurnLeft;
         }
     }
 }

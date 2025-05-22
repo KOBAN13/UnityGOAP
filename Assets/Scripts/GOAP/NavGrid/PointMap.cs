@@ -55,7 +55,7 @@ public class PointMap
     private readonly LinkedList<GenerateBase> tasks = new LinkedList<GenerateBase>();
     private readonly SimpleSheduler sheduler = new SimpleSheduler(6);
     public readonly IGenerateCallback GenerateCallback;
-    public readonly int round = 2;
+    public readonly int round = 10;
 
     public PointMap(IGenerateCallback generateCallback)
     {

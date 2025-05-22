@@ -79,7 +79,7 @@ public class NavGrid : MonoBehaviour
 
         _pointMap = new PointMap(new GridCallback(_obstaclesLayers));
 
-        _generatorChunksRound = new GeneratorChunksRound(_pointMap, _mainPoint, 2);
+        _generatorChunksRound = new GeneratorChunksRound(_pointMap, _mainPoint, 20);
 
         if (_debug)
         {
@@ -97,7 +97,7 @@ public class NavGrid : MonoBehaviour
 
         if (_debug)
         {
-            var v = _pointMap.GetPointAtPosition(_mainPoint.transform.position + new Vector3(0, 0.0F, 0));
+            var v = _pointMap.GetPointAtPosition(_mainPoint.transform.position + new Vector3(0.0f, 0.0f, 0.0f));
         }
     }
     

@@ -9,6 +9,7 @@ namespace GOAP.Animation.Enums
         ForwardRun = 1,
         TurnRight = 2,
         Attack = 3,
-        Idle = 4
+        Idle = 4,
+        TurnLeft = 5
     }
 }

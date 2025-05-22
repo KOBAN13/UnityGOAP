@@ -13,7 +13,7 @@ public class GeneratorChunksRound
     {
         _map = map;
         _position = position;
-        _distanceChunkGenerate = Math.Max(distanceChunkGenerate, 1);
+        _distanceChunkGenerate = Math.Max(distanceChunkGenerate, 40);
     }
 
     public void Update()

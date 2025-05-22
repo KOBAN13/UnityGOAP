@@ -1,5 +1,7 @@
 ﻿using System;
 using BlackboardScripts;
+using GOAP.Animation;
+using GOAP.Animation.Enums;
 using Helpers.Constants;
 using R3;
 using UnityEngine;
@@ -19,12 +21,14 @@ namespace GOAP
         private readonly CompositeDisposable _disposable = new();
         private readonly NavGrid _navGrid;
         private readonly Subject<Unit> _timerCompletedSubject = new();
+        private readonly AnimationBrain _animationBrain;
 
         public PatrolStrategy(BlackboardController blackboardController, float duration)
         {
             _agent = blackboardController.GetValue<NavMeshAgent>(NameAIKeys.Agent);
             _entry = blackboardController.GetValue<Transform>(NameAIKeys.TransformAI);
             _navGrid = blackboardController.GetValue<NavGrid>(NameAIKeys.NavGrid);
+            _animationBrain = blackboardController.GetValue<AnimationBrain>(NameAIKeys.AnimationBrain);
             _duration = duration;
         }
 
@@ -61,10 +65,11 @@ namespace GOAP
         {
             var pointMap = _navGrid.GetPointMap();
             var point = pointMap.GetPointAtPosition(_entry.position + Vector3.up * 2);
-            if(point != null)
-            {
-                _agent.destination = pointMap.FindFreePointAtPointRandomDist(point, 3, 10).Position;
-            }
+
+            if (point == null) return;
+            
+            _agent.destination = pointMap.FindFreePointAtPointRandomDist(point, 3, 10).Position;
+            _animationBrain.PlayAnimation(EMovementAnimationType.ForwardRun, 0.2f);
         }
         
         private void ClearDisposable()

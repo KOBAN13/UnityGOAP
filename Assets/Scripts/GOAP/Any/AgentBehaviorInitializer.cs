@@ -38,7 +38,7 @@ namespace GOAP
         public void SetupActions()
         {
             _actions.Add(new ActionBuilder("Chill")
-                .WithActionStrategy(_strategyFactory.CreateIdleStrategy(3f, _blackboard))
+                .WithActionStrategy(_strategyFactory.CreateIdleStrategy(6f, _blackboard))
                 .WithEffect(_agentBeliefs[AgentBeliefsName.Nothing])
                 .WithCost(goalPriority: 1, time: 3f, energy: 1f)
                 .BuildAgentAction());
