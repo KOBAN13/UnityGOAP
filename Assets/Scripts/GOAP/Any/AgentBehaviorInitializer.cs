@@ -86,7 +86,7 @@ namespace GOAP
                 .BuildAgentAction());
 
            _actions.Add(new ActionBuilder("PlayerAttack")
-                .WithActionStrategy(_strategyFactory.CreateAttackStrategy())
+                .WithActionStrategy(_strategyFactory.CreateAttackStrategy(_blackboard))
                 .WithPrecondition(_agentBeliefs[AgentBeliefsName.PlayerToAttackSensor])
                 .WithEffect(_agentBeliefs[AgentBeliefsName.AttackingPlayer])
                 .WithCost(goalPriority: 3, time: 3f, energy: 6f)

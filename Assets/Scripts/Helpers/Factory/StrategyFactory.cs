@@ -22,6 +22,6 @@ namespace Helpers.Factory
         public IActionStrategy CreateEnemySearch(BlackboardController blackboardController)
             => new EnemySearchStrategy(blackboardController);
 
-        public IActionStrategy CreateAttackStrategy() => new AttackStrategy();
+        public IActionStrategy CreateAttackStrategy(BlackboardController blackboardController) => new AttackStrategy(blackboardController);
     }
 }

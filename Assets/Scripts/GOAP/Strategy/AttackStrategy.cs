@@ -1,4 +1,8 @@
 ﻿using System;
+using BlackboardScripts;
+using GOAP.Animation;
+using GOAP.Animation.Enums;
+using Helpers.Constants;
 using R3;
 using UnityEngine;
 
@@ -11,6 +15,12 @@ namespace GOAP
 
         private readonly CompositeDisposable _disposable = new();
         private readonly Subject<Unit> _timerCompletedSubject = new();
+        private readonly AnimationBrain _animationBrain;
+
+        public AttackStrategy(BlackboardController blackboardController)
+        {
+            _animationBrain = blackboardController.GetValue<AnimationBrain>(NameAIKeys.AnimationBrain);
+        }
 
         public void Start()
         {
@@ -41,7 +51,7 @@ namespace GOAP
 
         private void Attack()
         {
-            Debug.LogWarning("IM ATTACK");
+            _animationBrain.PlayAnimation(EMovementAnimationType.Attack, 0.2f);
         }
     }
 }

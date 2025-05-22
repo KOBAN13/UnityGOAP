@@ -1,5 +1,7 @@
 ﻿using System;
 using BlackboardScripts;
+using GOAP.Animation;
+using GOAP.Animation.Enums;
 using Helpers.Constants;
 using R3;
 using UnityEngine;
@@ -24,6 +26,7 @@ namespace GOAP
         
         private bool _playerKnown;
         private Vector3 _lastKnownPlayerPosition;
+        private readonly AnimationBrain _animationBrain;
 
         public EnemySearchStrategy(BlackboardController blackboardController)
         {
@@ -34,6 +37,7 @@ namespace GOAP
             _navMesh = blackboardController.GetValue<NavMeshAgent>(NameAIKeys.Agent);
             _countIteration = blackboardController.GetValue<int>(NameAIKeys.CountIterationSearchEnemy);
             _playerTransform = blackboardController.GetValue<Transform>(NameAIKeys.PlayerTarget);
+            _animationBrain = blackboardController.GetValue<AnimationBrain>(NameAIKeys.AnimationBrain);
             _timeToStopSearch = _timeToSearch * _countIteration;
         }
 
@@ -73,6 +77,7 @@ namespace GOAP
 
                 if (NavMesh.SamplePosition(targetPosition, out NavMeshHit hit, _searchRadius, NavMesh.AllAreas))
                 {
+                    _animationBrain.PlayAnimation(EMovementAnimationType.ForwardRun, 0.2f);
                     _navMesh.destination = hit.position;
                 }
 
@@ -83,10 +88,11 @@ namespace GOAP
                 var randomDirection = UnityEngine.Random.insideUnitSphere * _searchRadius;
                 randomDirection += _unit.position;
 
-                if (NavMesh.SamplePosition(randomDirection, out NavMeshHit hit, _searchRadius, NavMesh.AllAreas))
-                {
-                    _navMesh.destination = hit.position;
-                }
+                if (!NavMesh.SamplePosition(randomDirection, out NavMeshHit hit, _searchRadius, NavMesh.AllAreas))
+                    return;
+                
+                _animationBrain.PlayAnimation(EMovementAnimationType.ForwardRun, 0.2f);
+                _navMesh.destination = hit.position;
             }
         }
 
