@@ -1,7 +1,7 @@
 ﻿using System;
 using R3;
 
-namespace Health
+namespace Stats
 {
     public class OperationWithHealth : IDisposable
     {

@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Threading;
+using Customs;
 using Cysharp.Threading.Tasks;
-using Health.Interface;
+using Stats.Interface;
 using UnityEngine;
 
-namespace Health
+namespace Stats
 {
     public class HealthCharacter : IHealthStats, IDisposable
     {
@@ -25,8 +26,7 @@ namespace Health
 
         public void SetDamage(float value)
         {
-            if (value < 0)
-                throw new ArgumentException($"The Argument {nameof(value)} cannot be <0");
+            Preconditions.CheckValidateData(value);
 
             CurrentHealth = Mathf.Clamp(CurrentHealth - value, 0f, MaxHealth);
 
@@ -40,8 +40,7 @@ namespace Health
 
         public async UniTaskVoid AddHealth(float value)
         {
-            if (value < 0) 
-                throw new ArgumentException($"The Argument {nameof(value)} cannot be < 0");
+            Preconditions.CheckValidateData(value);
 
             CurrentHealth = Mathf.Clamp(value * TransferFromInterest, 0f, MaxHealth);
 

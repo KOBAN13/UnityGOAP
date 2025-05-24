@@ -1,4 +1,4 @@
-﻿namespace Health.Interface
+﻿namespace Stats.Interface
 {
     public interface IHealthRestoring
     {

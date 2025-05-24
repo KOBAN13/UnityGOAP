@@ -27,7 +27,7 @@ namespace GOAP
         public IdleStrategy(float duration, BlackboardController blackboardController)
         {
             _duration = duration + 3f;
-            _enemy = blackboardController.GetValue<Transform>(NameAIKeys.TransformAI);
+            _enemy = blackboardController.GetValue<Transform>(NameAIKeys.AgentTransform);
             _animationBrain = blackboardController.GetValue<AnimationBrain>(NameAIKeys.AnimationBrain);
         }
 

@@ -1,7 +1,7 @@
 ﻿using System;
-using Health;
-using Health.Interface;
 using R3;
+using Stats;
+using Stats.Interface;
 
 namespace GOAP.Stats
 {
@@ -10,12 +10,14 @@ namespace GOAP.Stats
         private readonly RestoringHealthCharacter _restoringHealthCharacter;
         private readonly HealthCharacter _healthCharacterStats;
         private readonly OperationWithHealth _operationWithHealth;
+        private readonly StaminaCharacter _staminaCharacter;
         
         private readonly Subject<Unit> _hit = new();
         private readonly Subject<Unit> _die = new();
 
-        public AgentStats(IHealthConfig playerHealthConfig, Action hitAction, Action dieAction) 
+        public AgentStats(IHealthConfig playerHealthConfig, IStaminaConfig staminaConfig, Action hitAction, Action dieAction) 
         {
+            _staminaCharacter = new StaminaCharacter(staminaConfig.MaxStamina);
             _operationWithHealth = new OperationWithHealth(_hit, _die);
             _healthCharacterStats = new HealthCharacter(_operationWithHealth, playerHealthConfig.MaxHealth);
             _restoringHealthCharacter = new RestoringHealthCharacter(_healthCharacterStats, playerHealthConfig);
@@ -25,7 +27,16 @@ namespace GOAP.Stats
         }
         
         public void SetDamage(float value) => _restoringHealthCharacter.SetDamage(value);
+        
         public void AddHealth(float value) => _restoringHealthCharacter.AddHealth(value).Forget();
+        
+        public bool IsHealthLow(float healthMin) => _healthCharacterStats.CurrentHealth <= healthMin;
+        
+        public bool IsStaminaLow(float staminaMin) => _staminaCharacter.CurrentStamina <= staminaMin;
+        
+        public void SetFatigue(float value) => _staminaCharacter.SetFatigue(value);
+        
+        public void AddStamina(float value) => _staminaCharacter.AddStamina(value);
 
         public void Dispose()
         {

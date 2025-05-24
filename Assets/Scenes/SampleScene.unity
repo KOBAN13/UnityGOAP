@@ -664,6 +664,7 @@ MonoBehaviour:
   autoRun: 1
   autoInjectGameObjects: []
   "_characterAniman\u0441erParameters": {fileID: 11400000, guid: 7db33423a76233b47a36c8abc7d88415, type: 2}
+  _healthConfig: {fileID: 11400000, guid: d2a51e965e7f70f4b94193389061113f, type: 2}
   _animancerComponent: {fileID: 960283488}
 --- !u!1 &790670170
 GameObject:

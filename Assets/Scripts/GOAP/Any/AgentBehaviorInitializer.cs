@@ -49,7 +49,7 @@ namespace GOAP
                 .WithCost(goalPriority: 1, time: 10f, energy: 3f)
                 .BuildAgentAction());
  
-            var foodCort = GetDataOnBlackboard<Transform>(NameAIKeys.FoodPoint).position;
+            var foodCort = GetDataOnBlackboard<Transform>(NameAIKeys.FoodLocation).position;
             
             _actions.Add(new ActionBuilder("MoveToEat")
                 .WithActionStrategy(_strategyFactory.CreateMoveToPointStrategy(_blackboard, () => foodCort))
@@ -97,28 +97,28 @@ namespace GOAP
         {
             var factory = new BeliefFactory(_agentBeliefs);
             
-            factory.AddBelief(AgentBeliefsName.Nothing, GetFuncDelegate(NameExperts.NothingPredicate));
-            factory.AddBelief(AgentBeliefsName.AttackingPlayer, GetFuncDelegate(NameExperts.AttackPredicate));
+            factory.AddBelief(AgentBeliefsName.Nothing, GetFuncDelegate(NameAgentPredicate.NothingPredicate));
+            factory.AddBelief(AgentBeliefsName.AttackingPlayer, GetFuncDelegate(NameAgentPredicate.AttackPredicate));
                 
-            factory.AddBelief(AgentBeliefsName.AgentIdle, GetFuncDelegate(NameExperts.IdlePredicate));
-            factory.AddBelief(AgentBeliefsName.AgentMoving, GetFuncDelegate(NameExperts.MovementPredicate));
+            factory.AddBelief(AgentBeliefsName.AgentIdle, GetFuncDelegate(NameAgentPredicate.IdlePredicate));
+            factory.AddBelief(AgentBeliefsName.AgentMoving, GetFuncDelegate(NameAgentPredicate.MovementPredicate));
             
-            factory.AddBelief(AgentBeliefsName.AgentIsHealthLow, GetFuncDelegate(NameExperts.HealthLowPredicate));
-            factory.AddBelief(AgentBeliefsName.AgentIsHealthy, GetFuncDelegate(NameExperts.HealthPredicate));
+            factory.AddBelief(AgentBeliefsName.AgentIsHealthLow, GetFuncDelegate(NameAgentPredicate.HealthLowPredicate));
+            factory.AddBelief(AgentBeliefsName.AgentIsHealthy, GetFuncDelegate(NameAgentPredicate.HealthPredicate));
             
-            var foodCort = GetDataOnBlackboard<Transform>(NameAIKeys.FoodPoint).position;
-            var chillZone = GetDataOnBlackboard<Transform>(NameAIKeys.ChillPoint).position;
+            var foodCort = GetDataOnBlackboard<Transform>(NameAIKeys.FoodLocation).position;
+            var chillZone = GetDataOnBlackboard<Transform>(NameAIKeys.ChillLocate).position;
             
-            factory.AddLocationBelief(AgentBeliefsName.AgentAtFoodPosition, foodCort, GetFuncDelegate(NameExperts.LocationFoodPredicate));
-            factory.AddLocationBelief(AgentBeliefsName.AgentAtRestingPosition, chillZone, GetFuncDelegate(NameExperts.LocationChillPredicate));
+            factory.AddLocationBelief(AgentBeliefsName.AgentAtFoodPosition, foodCort, GetFuncDelegate(NameAgentPredicate.LocationFoodPredicate));
+            factory.AddLocationBelief(AgentBeliefsName.AgentAtRestingPosition, chillZone, GetFuncDelegate(NameAgentPredicate.LocationChillPredicate));
             
-            factory.AddSensorBelief(AgentBeliefsName.PlayerInEyeSensor, GetSensor(NameExperts.EyesSensor));
+            factory.AddSensorBelief(AgentBeliefsName.PlayerInEyeSensor, GetSensor(NameAgentPredicate.EyesSensor));
             
-            factory.AddSensorBelief(AgentBeliefsName.PlayerInHitSensor, GetSensor(NameExperts.HitSensor));
+            factory.AddSensorBelief(AgentBeliefsName.PlayerInHitSensor, GetSensor(NameAgentPredicate.HitSensor));
             
-            factory.AddSensorBelief(AgentBeliefsName.PlayerToAttackSensor, GetSensor(NameExperts.AttackSensor));
+            factory.AddSensorBelief(AgentBeliefsName.PlayerToAttackSensor, GetSensor(NameAgentPredicate.AttackSensor));
             
-            factory.AddSensorBelief(AgentBeliefsName.EnemySearch, GetSensor(NameExperts.EnemyVisionSensor));
+            factory.AddSensorBelief(AgentBeliefsName.EnemySearch, GetSensor(NameAgentPredicate.EnemyVisionSensor));
         }
         
         private T GetDataOnBlackboard<T>(string name) where T : class

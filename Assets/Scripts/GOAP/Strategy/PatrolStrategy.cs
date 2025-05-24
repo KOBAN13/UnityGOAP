@@ -26,7 +26,7 @@ namespace GOAP
         public PatrolStrategy(BlackboardController blackboardController, float duration)
         {
             _agent = blackboardController.GetValue<NavMeshAgent>(NameAIKeys.Agent);
-            _entry = blackboardController.GetValue<Transform>(NameAIKeys.TransformAI);
+            _entry = blackboardController.GetValue<Transform>(NameAIKeys.AgentTransform);
             _navGrid = blackboardController.GetValue<NavGrid>(NameAIKeys.NavGrid);
             _animationBrain = blackboardController.GetValue<AnimationBrain>(NameAIKeys.AnimationBrain);
             _duration = duration;

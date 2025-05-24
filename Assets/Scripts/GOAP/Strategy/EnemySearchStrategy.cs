@@ -33,7 +33,7 @@ namespace GOAP
             _playerKnown = true;
             _searchRadius = blackboardController.GetValue<float>(NameAIKeys.SearchEnemyRadius);
             _timeToSearch = blackboardController.GetValue<float>(NameAIKeys.TimeToSearchEnemy);
-            _unit = blackboardController.GetValue<Transform>(NameAIKeys.TransformAI);
+            _unit = blackboardController.GetValue<Transform>(NameAIKeys.AgentTransform);
             _navMesh = blackboardController.GetValue<NavMeshAgent>(NameAIKeys.Agent);
             _countIteration = blackboardController.GetValue<int>(NameAIKeys.CountIterationSearchEnemy);
             _playerTransform = blackboardController.GetValue<Transform>(NameAIKeys.PlayerTarget);

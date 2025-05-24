@@ -1,25 +1,26 @@
 ﻿namespace Helpers.Constants
 {
-    public class NameAIKeys
+    public static class NameAIKeys
     {
-        public static string AnimationBrain  => "AnimationBrain";
-        public static readonly string Agent = "NavMeshAgent";
-        public static readonly string HealthAI = "Health";
-        public static readonly string FoodPoint = "FoodPoint";
-        public static readonly string ChillPoint = "ChillPoint";
-        public static readonly string TransformAI = "Transform";
-        public static readonly string PlayerTarget = "Player";
-        public static readonly string NavGrid = "NavGrid";
-        public static readonly string SearchEnemyRadius = "Radius";
-        public static readonly string TimeToSearchEnemy = "TimeSearch";
-        public static readonly string CountIterationSearchEnemy = "CountIteration";
+        public static string AnimationBrain => nameof(AnimationBrain);
+        public static string Agent => nameof(Agent);
+        public static string AgentStats => nameof(AgentStats);
+        public static string FoodLocation => nameof(FoodLocation);
+        public static string ChillLocate => nameof(ChillLocate);
+        public static string AgentTransform => nameof(AgentTransform);
+        public static string PlayerTarget => nameof(PlayerTarget);
+        public static string NavGrid => nameof(NavGrid);
+        public static string SearchEnemyRadius => nameof(SearchEnemyRadius);
+        public static string TimeToSearchEnemy => nameof(TimeToSearchEnemy);
+        public static string CountIterationSearchEnemy => nameof(CountIterationSearchEnemy);
     }
 
-    public class NameExperts
+    public static class NameAgentPredicate
     {
         public static string MovementPredicate => nameof(MovementPredicate);
         public static string HealthPredicate => nameof(HealthPredicate);
         public static string StaminaPredicate => nameof(StaminaPredicate);
+        public static string StaminaLowPredicate => nameof(StaminaLowPredicate);
         public static string LocationFoodPredicate => nameof(LocationFoodPredicate);
         public static string LocationChillPredicate => nameof(LocationChillPredicate);
         public static string EyesSensor => nameof(EyesSensor);
@@ -36,7 +37,7 @@
         public static string EyesSensorPredicate => nameof(EyesSensorPredicate);
     }
     
-    public class AgentBeliefsName
+    public static class AgentBeliefsName
     {
         public static string Nothing => nameof(Nothing);
         public static string AttackingPlayer => nameof(AttackingPlayer);
@@ -50,14 +51,5 @@
         public static string PlayerToAttackSensor => nameof(PlayerToAttackSensor);
         public static string PlayerInHitSensor => nameof(PlayerInHitSensor);
         public static string EnemySearch => nameof(EnemySearch);
-        
-        public static string Chill => nameof(Chill);
-        public static string Walk => nameof(Walk);
-        public static string MoveToEat => nameof(MoveToEat);
-        public static string Heal => nameof(Heal);
-        public static string PlayerLook => nameof(PlayerLook);
-        public static string PlayerHit => nameof(PlayerHit);
-        public static string PlayerEscaped => nameof(PlayerEscaped);
-        public static string PlayerAttacked => nameof(PlayerAttacked);
     }
 }

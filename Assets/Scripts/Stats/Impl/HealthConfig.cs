@@ -1,9 +1,9 @@
-﻿using Health.Interface;
+﻿using Stats.Interface;
 using UnityEngine;
 
-namespace Health
+namespace Stats.Impl
 {
-    [CreateAssetMenu(fileName = nameof(HealthConfig), menuName = "Configs" + "/" + nameof(HealthConfig))]
+    [CreateAssetMenu(fileName = nameof(HealthConfig), menuName = "Stats" + "/" + nameof(HealthConfig))]
     public class HealthConfig : ScriptableObject, IHealthConfig
     {
         [field: SerializeField]

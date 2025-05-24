@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 577cfdefc1ba41d8a69db31ccc2c436e, type: 3}
   m_Name: EnemyHealthConfig
   m_EditorClassIdentifier: 
-  <MaxHealth>k__BackingField: 1000
+  <MaxHealth>k__BackingField: 100
   <CoefficientRecoveryHealth>k__BackingField: 0.01
   <TimeRecoveryHealth>k__BackingField: 2
   <CoefficientRecoveryHealthAfterEnemyDead>k__BackingField: 0.02

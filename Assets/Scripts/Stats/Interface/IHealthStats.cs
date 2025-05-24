@@ -1,6 +1,6 @@
 ﻿using Cysharp.Threading.Tasks;
 
-namespace Health.Interface
+namespace Stats.Interface
 {
     public interface IHealthStats
     {

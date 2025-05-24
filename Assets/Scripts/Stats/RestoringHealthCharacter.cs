@@ -2,11 +2,11 @@
 using System.Threading;
 using Cysharp.Threading.Tasks;
 using DG.Tweening;
-using Health.Interface;
 using R3;
+using Stats.Interface;
 using UnityEngine;
 
-namespace Health
+namespace Stats
 {
     public class RestoringHealthCharacter : IHealthStats, IHealthRestoring, IDisposable
     {

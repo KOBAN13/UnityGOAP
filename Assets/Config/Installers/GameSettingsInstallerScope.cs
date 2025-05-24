@@ -2,8 +2,8 @@
 using GOAP.Animation;
 using GOAP.Animation.Impl;
 using GOAP.Animation.Interface;
-using Health;
-using Health.Interface;
+using Stats.Impl;
+using Stats.Interface;
 using UnityEngine;
 using VContainer;
 using VContainer.Unity;
@@ -14,12 +14,13 @@ namespace Config.Installers
     {
         [SerializeField] private CharacterAnimanсerParameters _characterAnimanсerParameters;
         [SerializeField] private HealthConfig _healthConfig;
+        [SerializeField] private StaminaConfig _staminaConfig;
         [SerializeField] private AnimancerComponent _animancerComponent;
 
         protected override void Configure(IContainerBuilder builder)
         {
             BindCharacterAnimancerParameters(builder);
-            BindHealthConfig(builder);
+            BindStatsConfig(builder);
         }
         
         private void BindCharacterAnimancerParameters(IContainerBuilder container)
@@ -39,11 +40,17 @@ namespace Config.Installers
                 .AsSelf();
         }
         
-        private void BindHealthConfig(IContainerBuilder container)
+        private void BindStatsConfig(IContainerBuilder container)
         {
             container
                 .RegisterInstance(_healthConfig)
-                .As<IHealthConfig>();
+                .AsImplementedInterfaces()
+                .AsSelf();
+            
+            container
+                .RegisterInstance(_staminaConfig)
+                .AsImplementedInterfaces()
+                .AsSelf();
         }
     }
 }

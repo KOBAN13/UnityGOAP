@@ -11,8 +11,8 @@ using Customs;
 using GOAP.Animation;
 using GOAP.Pools;
 using GOAP.Stats;
-using Health.Interface;
 using Helpers.Constants;
+using Stats.Interface;
 
 namespace GOAP
 {
@@ -33,10 +33,6 @@ namespace GOAP
         [SerializeField] private Transform _foodCort;
         [SerializeField] private Transform _chilZone;
         [SerializeField] private Transform _target;
-
-        [Header("HealthStats")] 
-        [SerializeField] private float _health;
-        [SerializeField] private float _stamina;
         
         [Header("Agent Links")]
         private NavMeshAgent _navMeshAgent;
@@ -63,12 +59,12 @@ namespace GOAP
         private AgentPools _agentsPool;
         
         [Inject]
-        public void Construct(IBTDebugger debugger, AnimationBrain animationBrain, IHealthConfig healthConfig)
+        public void Construct(IBTDebugger debugger, AnimationBrain animationBrain, IHealthConfig healthConfig, IStaminaConfig staminaConfig)
         {
             _debugger = debugger;
             _animationBrain = animationBrain;
             
-            _agentStats = new AgentStats(healthConfig, OnHit, OnDie);
+            _agentStats = new AgentStats(healthConfig, staminaConfig, OnHit, OnDie);
         }
 
         private void Awake()
@@ -104,15 +100,15 @@ namespace GOAP
 
         private void SetupDataToBlackboard()
         {
-            _blackboardController.SetValue<ISensor>(NameExperts.EyesSensor, _eyesSensor);
-            _blackboardController.SetValue<ISensor>(NameExperts.HitSensor, _hitSensor);
-            _blackboardController.SetValue<ISensor>(NameExperts.AttackSensor, _attackSensor);
-            _blackboardController.SetValue<ISensor>(NameExperts.EnemyVisionSensor, _enemyVisionSensor);
+            _blackboardController.SetValue<ISensor>(NameAgentPredicate.EyesSensor, _eyesSensor);
+            _blackboardController.SetValue<ISensor>(NameAgentPredicate.HitSensor, _hitSensor);
+            _blackboardController.SetValue<ISensor>(NameAgentPredicate.AttackSensor, _attackSensor);
+            _blackboardController.SetValue<ISensor>(NameAgentPredicate.EnemyVisionSensor, _enemyVisionSensor);
             _blackboardController.SetValue(NameAIKeys.Agent, _navMeshAgent);
-            _blackboardController.SetValue(NameAIKeys.HealthAI, _health);
-            _blackboardController.SetValue(NameAIKeys.FoodPoint, _foodCort);
-            _blackboardController.SetValue(NameAIKeys.ChillPoint, _chilZone);
-            _blackboardController.SetValue(NameAIKeys.TransformAI, transform);
+            _blackboardController.SetValue(NameAIKeys.AgentStats, _agentStats);
+            _blackboardController.SetValue(NameAIKeys.FoodLocation, _foodCort);
+            _blackboardController.SetValue(NameAIKeys.ChillLocate, _chilZone);
+            _blackboardController.SetValue(NameAIKeys.AgentTransform, transform);
             _blackboardController.SetValue(NameAIKeys.PlayerTarget, _target);
             _blackboardController.SetValue(NameAIKeys.NavGrid, _navGrid);
             _blackboardController.SetValue(NameAIKeys.SearchEnemyRadius, 5f);
@@ -120,14 +116,16 @@ namespace GOAP
             _blackboardController.SetValue(NameAIKeys.CountIterationSearchEnemy, 3);
             _blackboardController.SetValue(NameAIKeys.AnimationBrain, _animationBrain);
             
-            _blackboardController.SetValue<Func<bool>>(NameExperts.NothingPredicate, () => false);
-            _blackboardController.SetValue<Func<bool>>(NameExperts.AttackPredicate, () => false);
-            _blackboardController.SetValue<Func<bool>>(NameExperts.IdlePredicate, () => !_navMeshAgent.hasPath);
-            _blackboardController.SetValue<Func<bool>>(NameExperts.HealthLowPredicate, () => _health < 50);
-            _blackboardController.SetValue<Func<bool>>(NameExperts.HealthPredicate, () => _health > 50);
-            _blackboardController.SetValue<Func<bool>>(NameExperts.LocationFoodPredicate, () => _foodCort.position.InRangeOf(transform.position, 3f));
-            _blackboardController.SetValue<Func<bool>>(NameExperts.LocationChillPredicate, () => _chilZone.position.InRangeOf(transform.position, 3f));
-            _blackboardController.SetValue<Func<bool>>(NameExperts.MovementPredicate, () => _navMeshAgent.hasPath);
+            _blackboardController.SetValue<Func<bool>>(NameAgentPredicate.NothingPredicate, () => false);
+            _blackboardController.SetValue<Func<bool>>(NameAgentPredicate.AttackPredicate, () => false);
+            _blackboardController.SetValue<Func<bool>>(NameAgentPredicate.IdlePredicate, () => !_navMeshAgent.hasPath);
+            _blackboardController.SetValue<Func<bool>>(NameAgentPredicate.HealthLowPredicate, () => _agentStats.IsHealthLow(50));
+            _blackboardController.SetValue<Func<bool>>(NameAgentPredicate.HealthPredicate, () => !_agentStats.IsHealthLow(50));
+            _blackboardController.SetValue<Func<bool>>(NameAgentPredicate.StaminaLowPredicate, () => _agentStats.IsStaminaLow(50));
+            _blackboardController.SetValue<Func<bool>>(NameAgentPredicate.StaminaPredicate, () => !_agentStats.IsStaminaLow(50));
+            _blackboardController.SetValue<Func<bool>>(NameAgentPredicate.LocationFoodPredicate, () => _foodCort.position.InRangeOf(transform.position, 3f));
+            _blackboardController.SetValue<Func<bool>>(NameAgentPredicate.LocationChillPredicate, () => _chilZone.position.InRangeOf(transform.position, 3f));
+            _blackboardController.SetValue<Func<bool>>(NameAgentPredicate.MovementPredicate, () => _navMeshAgent.hasPath);
         }
         
         private void SetupTimers()
@@ -138,7 +136,7 @@ namespace GOAP
                 .AddTo(_disposable); 
             
             Observable
-                .Timer(TimeSpan.FromSeconds(2f), TimeSpan.FromSeconds(2f))
+                .Timer(TimeSpan.FromSeconds(3f), TimeSpan.FromSeconds(3f))
                 .Subscribe(_ => UpdateStats())
                 .AddTo(_disposable);
         }
@@ -163,11 +161,23 @@ namespace GOAP
 
         private void UpdateStats()
         {
-            _stamina += _chilZone.position.InRangeOf(transform.position, 3f) ? 20 : -10;
-            _health += _foodCort.position.InRangeOf(transform.position, 3f) ? 20 : -10;
-
-            _stamina = Math.Clamp(_stamina, 0f, 150f);
-            _health = Math.Clamp(_health, 0f, 150f);
+            if (_chilZone.position.InRangeOf(transform.position, 3f))
+            {
+                _agentStats.AddHealth(10);
+            }
+            else
+            {
+                _agentStats.SetDamage(10);
+            }
+            
+            if (_foodCort.position.InRangeOf(transform.position, 3f))
+            {
+                _agentStats.AddStamina(10);
+            }
+            else
+            {
+                _agentStats.SetFatigue(10);
+            }
         }
 
         private void InitBehaviourTree(Stack<TempLeaf> leafs)
