@@ -11,8 +11,7 @@ namespace Stats
     public class RestoringHealthCharacter : IHealthStats, IHealthRestoring, IDisposable
     {
         public float MaxHealth { get; private set; }
-        public float CurrentHealth { get; private set; }
-
+        public ReadOnlyReactiveProperty<float> CurrentHealth => _currentHealth;
         public bool IsHealthRestoringAfterHitEnemy { get; set; } = false;
         public bool IsHealthRestoringAfterDieEnemy { get; set; } = false;
 
@@ -23,12 +22,13 @@ namespace Stats
         private readonly IHealthStats _healthStats;
         private readonly IHealthConfig _healthConfig;
         private readonly CompositeDisposable _compositeDisposable = new();
+        private readonly ReactiveProperty<float> _currentHealth = new();
         private const float TransferToInterest = 0.01f;
         private CancellationTokenSource _cancellationTokenSource;
 
         public RestoringHealthCharacter(IHealthStats healthStats, IHealthConfig healthConfig)
         {
-            MaxHealth = CurrentHealth = healthConfig.MaxHealth;
+            MaxHealth = _currentHealth.Value = healthConfig.MaxHealth;
             _healthStats = healthStats;
             _healthConfig = healthConfig;
         }
@@ -39,7 +39,7 @@ namespace Stats
         {
             var restoringHealth = MaxHealth * _healthConfig.CoefficientRecoveryHealth * TransferToInterest;
             IsHealthRestoringAfterHitEnemy = true;
-            _previouslyValue = _healthStats.CurrentHealth;
+            _previouslyValue = _healthStats.CurrentHealth.CurrentValue;
             _cancellationTokenSource = new CancellationTokenSource();
 
             if (IsHealthRestoringAfterDieEnemy)
@@ -53,7 +53,7 @@ namespace Stats
                     x =>
                     {
                         _healthStats.AddHealth(x + _previouslyValue);
-                        _currencyValue = _healthStats.CurrentHealth;
+                        _currencyValue = _healthStats.CurrentHealth.CurrentValue;
                     },
                     restoringHealth,
                     _healthConfig.TimeRecoveryHealth

@@ -7,8 +7,8 @@ namespace GOAP.Stats
 {
     public class AgentStats : IDisposable
     {
-        public float CurrentHealth => _healthCharacterStats.CurrentHealth;
-        public float CurrentStamina => _staminaCharacter.CurrentStamina;
+        public float CurrentHealth => _healthCharacterStats.CurrentHealth.CurrentValue;
+        public float CurrentStamina => _staminaCharacter.CurrentStamina.CurrentValue;
         
         private readonly RestoringHealthCharacter _restoringHealthCharacter;
         private readonly HealthCharacter _healthCharacterStats;
@@ -33,9 +33,9 @@ namespace GOAP.Stats
         
         public void AddHealth(float value) => _restoringHealthCharacter.AddHealth(value).Forget();
         
-        public bool IsHealthLow(float healthMin) => _healthCharacterStats.CurrentHealth <= healthMin;
+        public bool IsHealthLow(float healthMin) => _healthCharacterStats.CurrentHealth.CurrentValue <= healthMin;
         
-        public bool IsStaminaLow(float staminaMin) => _staminaCharacter.CurrentStamina <= staminaMin;
+        public bool IsStaminaLow(float staminaMin) => _staminaCharacter.CurrentStamina.CurrentValue <= staminaMin;
         
         public void SetFatigue(float value) => _staminaCharacter.SetFatigue(value);
         

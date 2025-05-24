@@ -2,6 +2,7 @@
 using System.Threading;
 using Customs;
 using Cysharp.Threading.Tasks;
+using R3;
 using Stats.Interface;
 using UnityEngine;
 
@@ -10,29 +11,30 @@ namespace Stats
     public class HealthCharacter : IHealthStats, IDisposable
     {
         public float MaxHealth { get; }
-        public float CurrentHealth { get; private set; }
+        public ReadOnlyReactiveProperty<float> CurrentHealth => _currentHealth;
         
         private float _amountHealthPercentage = 1f;
         private const float TransferFromInterest = 100f;
         private CancellationTokenSource _cancellationTokenSource;
         
+        private readonly ReactiveProperty<float> _currentHealth = new();
         private readonly OperationWithHealth _operationWithHealth;
-
+        
         public HealthCharacter(OperationWithHealth operationWithHealth, float health)
         {
             _operationWithHealth = operationWithHealth;
-            MaxHealth = CurrentHealth = health;
+            MaxHealth = _currentHealth.Value = health;
         }
 
         public void SetDamage(float value)
         {
             Preconditions.CheckValidateData(value);
 
-            CurrentHealth = Mathf.Clamp(CurrentHealth - value, 0f, MaxHealth);
+            _currentHealth.Value = Mathf.Clamp(_currentHealth.Value - value, 0f, MaxHealth);
 
             _amountHealthPercentage -= value / MaxHealth;
             
-            if (CurrentHealth != 0f) 
+            if (_currentHealth.Value != 0f) 
                 return;
             
             _operationWithHealth.InvokeDead();
@@ -42,7 +44,7 @@ namespace Stats
         {
             Preconditions.CheckValidateData(value);
 
-            CurrentHealth = Mathf.Clamp(value * TransferFromInterest, 0f, MaxHealth);
+            _currentHealth.Value = Mathf.Clamp(value * TransferFromInterest, 0f, MaxHealth);
 
             _amountHealthPercentage = value;
             
