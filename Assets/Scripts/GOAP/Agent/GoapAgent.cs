@@ -10,6 +10,8 @@ using VContainer;
 using Customs;
 using GOAP.Animation;
 using GOAP.Pools;
+using GOAP.Stats;
+using Health.Interface;
 using Helpers.Constants;
 
 namespace GOAP
@@ -51,16 +53,22 @@ namespace GOAP
         private BlackboardController _blackboardController;
         private AgentGoal _agentGoal;
         private AnimationBrain _animationBrain;
+        private AgentStats _agentStats;
         private IBTDebugger _debugger;
+
+        private Action OnHit => () => Debug.LogWarning("Hit");
+        private Action OnDie => () => Debug.LogWarning("OnDie");
         
         [Header("Pools")]
         private AgentPools _agentsPool;
         
         [Inject]
-        public void Construct(IBTDebugger debugger, AnimationBrain animationBrain)
+        public void Construct(IBTDebugger debugger, AnimationBrain animationBrain, IHealthConfig healthConfig)
         {
             _debugger = debugger;
             _animationBrain = animationBrain;
+            
+            _agentStats = new AgentStats(healthConfig, OnHit, OnDie);
         }
 
         private void Awake()

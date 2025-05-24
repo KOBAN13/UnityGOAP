@@ -9,7 +9,7 @@ namespace Health
         private readonly Subject<Unit> _die;
         private readonly CompositeDisposable _compositeDisposable = new();
 
-        public OperationWithHealth(Subject<Unit> hit,  Subject<Unit> die) 
+        public OperationWithHealth(Subject<Unit> hit, Subject<Unit> die) 
         {
             _die = die;
             _hit = hit;

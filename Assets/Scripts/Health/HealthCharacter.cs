@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Threading;
 using Cysharp.Threading.Tasks;
+using Health.Interface;
 using UnityEngine;
 
 namespace Health
 {
-    public class Health : IHealthStats, IDisposable
+    public class HealthCharacter : IHealthStats, IDisposable
     {
         public float MaxHealth { get; }
         public float CurrentHealth { get; private set; }
@@ -16,7 +17,7 @@ namespace Health
         
         private readonly OperationWithHealth _operationWithHealth;
 
-        public Health(OperationWithHealth operationWithHealth, float health)
+        public HealthCharacter(OperationWithHealth operationWithHealth, float health)
         {
             _operationWithHealth = operationWithHealth;
             MaxHealth = CurrentHealth = health;
@@ -24,20 +25,23 @@ namespace Health
 
         public void SetDamage(float value)
         {
-            if (value < 0) throw new ArgumentException($"The Argument {nameof(value)} cannot be <0");
+            if (value < 0)
+                throw new ArgumentException($"The Argument {nameof(value)} cannot be <0");
 
             CurrentHealth = Mathf.Clamp(CurrentHealth - value, 0f, MaxHealth);
 
             _amountHealthPercentage -= value / MaxHealth;
             
-            if (CurrentHealth != 0f) return;
+            if (CurrentHealth != 0f) 
+                return;
             
             _operationWithHealth.InvokeDead();
         }
 
         public async UniTaskVoid AddHealth(float value)
         {
-            if (value < 0) throw new ArgumentException($"The Argument {nameof(value)} cannot be < 0");
+            if (value < 0) 
+                throw new ArgumentException($"The Argument {nameof(value)} cannot be < 0");
 
             CurrentHealth = Mathf.Clamp(value * TransferFromInterest, 0f, MaxHealth);
 

@@ -2,13 +2,13 @@
 using System.Threading;
 using Cysharp.Threading.Tasks;
 using DG.Tweening;
-using Health.Configs;
+using Health.Interface;
 using R3;
 using UnityEngine;
 
 namespace Health
 {
-    public class RestoringHealth<T> : IHealthStats, IHealthRestoring, IDisposable where T : MonoBehaviour
+    public class RestoringHealthCharacter : IHealthStats, IHealthRestoring, IDisposable
     {
         public float MaxHealth { get; private set; }
         public float CurrentHealth { get; private set; }
@@ -21,29 +21,29 @@ namespace Health
         private Tween _tween;
         
         private readonly IHealthStats _healthStats;
-        private readonly PlayerHealthConfig _playerHealthConfig;
+        private readonly IHealthConfig _healthConfig;
         private readonly CompositeDisposable _compositeDisposable = new();
         private const float TransferToInterest = 0.01f;
         private CancellationTokenSource _cancellationTokenSource;
 
-        public RestoringHealth(IHealthStats healthStats, PlayerHealthConfig playerHealthConfig)
+        public RestoringHealthCharacter(IHealthStats healthStats, IHealthConfig healthConfig)
         {
-            MaxHealth = CurrentHealth = playerHealthConfig.MaxHealth;
+            MaxHealth = CurrentHealth = healthConfig.MaxHealth;
             _healthStats = healthStats;
-            _playerHealthConfig = playerHealthConfig;
+            _healthConfig = healthConfig;
         }
 
         public void SetDamage(float value) => _healthStats.SetDamage(value);
 
         public async UniTaskVoid AddHealth(float value = 0f)
         {
-            var restoringHealth = MaxHealth * _playerHealthConfig.CoefficientRecoveryHealth * TransferToInterest;
+            var restoringHealth = MaxHealth * _healthConfig.CoefficientRecoveryHealth * TransferToInterest;
             IsHealthRestoringAfterHitEnemy = true;
             _previouslyValue = _healthStats.CurrentHealth;
             _cancellationTokenSource = new CancellationTokenSource();
 
             if (IsHealthRestoringAfterDieEnemy)
-                _healthStats.AddHealth(MaxHealth * _playerHealthConfig.CoefficientRecoveryHealthAfterEnemyDead *
+                _healthStats.AddHealth(MaxHealth * _healthConfig.CoefficientRecoveryHealthAfterEnemyDead *
                                        TransferToInterest);
 
             var tcs = new UniTaskCompletionSource<bool>();
@@ -56,7 +56,7 @@ namespace Health
                         _currencyValue = _healthStats.CurrentHealth;
                     },
                     restoringHealth,
-                    _playerHealthConfig.TimeRecoveryHealth
+                    _healthConfig.TimeRecoveryHealth
                 )
                 .SetEase(Ease.Linear)
                 .OnComplete(() => tcs.TrySetResult(true))
