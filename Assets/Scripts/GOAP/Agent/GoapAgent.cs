@@ -45,18 +45,20 @@ namespace GOAP
         private IGoapPlanner _goapPlanner;
         private AgentPlan _actionPlan;
         private AgentBehaviorInitializer _agentBehaviorInitializer;
-        private BehaviourTree.BehaviourTree _behaviourTree;
+        private BehaviourTreeNode _behaviourTreeNode;
         private BlackboardController _blackboardController;
         private AgentGoal _agentGoal;
         private AnimationBrain _animationBrain;
         private AgentStats _agentStats;
         private IBTDebugger _debugger;
-
+        private AgentPools _agentsPool;
+        
+        [Header("Debugs")]
+        [SerializeField] public float Health;
+        [SerializeField] public float Stamina;
+        
         private Action OnHit => () => Debug.LogWarning("Hit");
         private Action OnDie => () => Debug.LogWarning("OnDie");
-        
-        [Header("Pools")]
-        private AgentPools _agentsPool;
         
         [Inject]
         public void Construct(IBTDebugger debugger, AnimationBrain animationBrain, IHealthConfig healthConfig, IStaminaConfig staminaConfig)
@@ -72,7 +74,7 @@ namespace GOAP
             _blackboardController = new BlackboardController();
             _navMeshAgent = GetComponent<NavMeshAgent>();
             SetupDataToBlackboard();
-            _behaviourTree = new BehaviourTree.BehaviourTree("Agent Tree", 0, _debugger);
+            _behaviourTreeNode = new BehaviourTreeNode("Agent Tree", 0, _debugger);
             
             _agentBehaviorInitializer = new AgentBehaviorInitializer(_actions, _agentBeliefs, 
                 _goals, _blackboardController);
@@ -84,6 +86,12 @@ namespace GOAP
             _agentBehaviorInitializer.SetupBeliefs();
             _agentBehaviorInitializer.SetupActions();
             _agentBehaviorInitializer.SetupGoals();
+        }
+
+        private void Update()
+        {
+            Health = _agentStats.CurrentHealth;
+            Stamina = _agentStats.CurrentStamina;
         }
 
         private void OnEnable()
@@ -163,20 +171,20 @@ namespace GOAP
         {
             if (_chilZone.position.InRangeOf(transform.position, 3f))
             {
-                _agentStats.AddHealth(10);
+                _agentStats.AddHealth(5);
             }
             else
             {
-                _agentStats.SetDamage(10);
+                _agentStats.SetDamage(5);
             }
             
             if (_foodCort.position.InRangeOf(transform.position, 3f))
             {
-                _agentStats.AddStamina(10);
+                _agentStats.AddStamina(5);
             }
             else
             {
-                _agentStats.SetFatigue(10);
+                _agentStats.SetFatigue(5);
             }
         }
 
@@ -202,8 +210,8 @@ namespace GOAP
                 sequencePlan.AddChild(leaf);
             }
             
-            _behaviourTree.AddChild(sequencePlan);
-            _behaviourTree.Start();
+            _behaviourTreeNode.AddChild(sequencePlan);
+            _behaviourTreeNode.Start();
         }
         
         private void FindMostPriorityGoal()
@@ -211,8 +219,8 @@ namespace GOAP
             if (_actionPlan == null)
                 return;
             
-            _behaviourTree.Stop();
-            _behaviourTree.Reset();
+            _behaviourTreeNode.Stop();
+            _behaviourTreeNode.Reset();
             
             CreatePlan();
         }
@@ -229,14 +237,14 @@ namespace GOAP
         
         private void CompletePlan()
         {
-            _behaviourTree.Process();
+            _behaviourTreeNode.Process();
 
-            if (_behaviourTree.Status == BTNodeStatus.Running) return;
+            if (_behaviourTreeNode.Status == BTNodeStatus.Running) return;
             
-            _behaviourTree.Reset();
-            _behaviourTree.SetGoalsState(default, _agentGoal);
+            _behaviourTreeNode.Reset();
+            _behaviourTreeNode.SetGoalsState(default, _agentGoal);
 
-            foreach (var node in _behaviourTree.Nodes)
+            foreach (var node in _behaviourTreeNode.Nodes)
             {
                 _agentsPool.NodesBehaviourTree.Release(node);
             }
@@ -246,13 +254,13 @@ namespace GOAP
 
         private void CreatePlan()
         {
-            var (planResult, goalResult) = _goapPlanner.GetPlan(_actions, _goals, _behaviourTree.LastGoal);
+            var (planResult, goalResult) = _goapPlanner.GetPlan(_actions, _goals, _behaviourTreeNode.LastGoal);
             
             if (planResult == null) return;
             
             _actionPlan = planResult;
             _agentGoal = goalResult;
-            _behaviourTree.SetGoalsState(_agentGoal, default);
+            _behaviourTreeNode.SetGoalsState(_agentGoal, default);
             InitBehaviourTree(_actionPlan.Actions);
         }
     }

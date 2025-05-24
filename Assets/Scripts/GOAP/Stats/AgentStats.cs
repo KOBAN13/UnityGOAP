@@ -7,6 +7,9 @@ namespace GOAP.Stats
 {
     public class AgentStats : IDisposable
     {
+        public float CurrentHealth => _healthCharacterStats.CurrentHealth;
+        public float CurrentStamina => _staminaCharacter.CurrentStamina;
+        
         private readonly RestoringHealthCharacter _restoringHealthCharacter;
         private readonly HealthCharacter _healthCharacterStats;
         private readonly OperationWithHealth _operationWithHealth;

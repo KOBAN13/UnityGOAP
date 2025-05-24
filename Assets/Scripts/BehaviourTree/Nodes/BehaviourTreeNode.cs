@@ -2,14 +2,14 @@
 
 namespace BehaviourTree
 {
-    public class BehaviourTree : Node
+    public class BehaviourTreeNode : Node
     {
         public override BTNodeStatus Status { get; protected set; }
         public sealed override string Name { get; protected set; }
         public AgentGoal CurrentGoal { get; private set; }
         public AgentGoal LastGoal { get; private set; }
 
-        public BehaviourTree(string name, float cost, IBTDebugger debugger) : base(cost, debugger)
+        public BehaviourTreeNode(string name, float cost, IBTDebugger debugger) : base(cost, debugger)
         {
             Name = name;
         }
