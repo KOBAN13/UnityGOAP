@@ -100,10 +100,10 @@ namespace GOAP
 
         private void SetupDataToBlackboard()
         {
-            _blackboardController.SetValue<ISensor>(NameAgentPredicate.EyesSensor, _eyesSensor);
-            _blackboardController.SetValue<ISensor>(NameAgentPredicate.HitSensor, _hitSensor);
-            _blackboardController.SetValue<ISensor>(NameAgentPredicate.AttackSensor, _attackSensor);
-            _blackboardController.SetValue<ISensor>(NameAgentPredicate.EnemyVisionSensor, _enemyVisionSensor);
+            _blackboardController.SetValue<ISensor>(NameAgentPredicate.EyesSensorPredicate, _eyesSensor);
+            _blackboardController.SetValue<ISensor>(NameAgentPredicate.HitSensorPredicate, _hitSensor);
+            _blackboardController.SetValue<ISensor>(NameAgentPredicate.AttackSensorPredicate, _attackSensor);
+            _blackboardController.SetValue<ISensor>(NameAgentPredicate.VisionSensorPredicate, _enemyVisionSensor);
             _blackboardController.SetValue(NameAIKeys.Agent, _navMeshAgent);
             _blackboardController.SetValue(NameAIKeys.AgentStats, _agentStats);
             _blackboardController.SetValue(NameAIKeys.FoodLocation, _foodCort);

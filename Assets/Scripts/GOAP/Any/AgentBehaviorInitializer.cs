@@ -112,13 +112,13 @@ namespace GOAP
             factory.AddLocationBelief(AgentBeliefsName.AgentAtFoodPosition, foodCort, GetFuncDelegate(NameAgentPredicate.LocationFoodPredicate));
             factory.AddLocationBelief(AgentBeliefsName.AgentAtRestingPosition, chillZone, GetFuncDelegate(NameAgentPredicate.LocationChillPredicate));
             
-            factory.AddSensorBelief(AgentBeliefsName.PlayerInEyeSensor, GetSensor(NameAgentPredicate.EyesSensor));
+            factory.AddSensorBelief(AgentBeliefsName.PlayerInEyeSensor, GetSensor(NameAgentPredicate.EyesSensorPredicate));
             
-            factory.AddSensorBelief(AgentBeliefsName.PlayerInHitSensor, GetSensor(NameAgentPredicate.HitSensor));
+            factory.AddSensorBelief(AgentBeliefsName.PlayerInHitSensor, GetSensor(NameAgentPredicate.HitSensorPredicate));
             
-            factory.AddSensorBelief(AgentBeliefsName.PlayerToAttackSensor, GetSensor(NameAgentPredicate.AttackSensor));
+            factory.AddSensorBelief(AgentBeliefsName.PlayerToAttackSensor, GetSensor(NameAgentPredicate.AttackSensorPredicate));
             
-            factory.AddSensorBelief(AgentBeliefsName.EnemySearch, GetSensor(NameAgentPredicate.EnemyVisionSensor));
+            factory.AddSensorBelief(AgentBeliefsName.EnemySearch, GetSensor(NameAgentPredicate.VisionSensorPredicate));
         }
         
         private T GetDataOnBlackboard<T>(string name) where T : class
