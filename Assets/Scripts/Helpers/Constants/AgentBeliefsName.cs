@@ -8,6 +8,8 @@
         public static string AgentMoving => nameof(AgentMoving);
         public static string AgentIsHealthLow => nameof(AgentIsHealthLow);
         public static string AgentIsHealthy => nameof(AgentIsHealthy);
+        public static string AgentIsStaminaLow => nameof(AgentIsStaminaLow);
+        public static string AgentIsRested => nameof(AgentIsRested);
         public static string AgentAtFoodPosition => nameof(AgentAtFoodPosition);
         public static string AgentAtRestingPosition => nameof(AgentAtRestingPosition);
         public static string PlayerInEyeSensor => nameof(PlayerInEyeSensor);

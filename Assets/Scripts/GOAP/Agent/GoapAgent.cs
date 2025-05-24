@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Animancer;
 using BehaviourTree;
 using BlackboardScripts;
 using R3;
@@ -17,7 +18,7 @@ using Stats.Interface;
 namespace GOAP
 {
     [RequireComponent(typeof(NavMeshAgent))]
-    [RequireComponent(typeof(Animator))]
+    [RequireComponent(typeof(AnimancerComponent))]
     public class GoapAgent : MonoBehaviour
     {
         [Header("Sensors")] 
@@ -57,7 +58,7 @@ namespace GOAP
         [SerializeField] public float Health;
         [SerializeField] public float Stamina;
         
-        private Action OnHit => () => Debug.LogWarning("Hit");
+        private Action OnHit => () => Debug.LogWarning("OnHit");
         private Action OnDie => () => Debug.LogWarning("OnDie");
         
         [Inject]

@@ -32,11 +32,15 @@ namespace GOAP
             factory.AddGoalAgent("Idle", 1, _agentBeliefs[AgentBeliefsName.Nothing]);
             factory.AddGoalAgent("Walk", 1, _agentBeliefs[AgentBeliefsName.AgentMoving]);
             factory.AddGoalAgent("Health", 2, _agentBeliefs[AgentBeliefsName.AgentIsHealthy]);
+            factory.AddGoalAgent("Rest", 2, _agentBeliefs[AgentBeliefsName.AgentIsRested]);
             factory.AddGoalAgent("Attack", 3, _agentBeliefs[AgentBeliefsName.AttackingPlayer]); 
         }
 
         public void SetupActions()
         {
+            var foodCort = GetDataOnBlackboard<Transform>(NameAIKeys.FoodLocation).position;
+            var restZone = GetDataOnBlackboard<Transform>(NameAIKeys.ChillLocate).position;
+            
             _actions.Add(new ActionBuilder("Chill")
                 .WithActionStrategy(_strategyFactory.CreateIdleStrategy(6f, _blackboard))
                 .WithEffect(_agentBeliefs[AgentBeliefsName.Nothing])
@@ -48,8 +52,6 @@ namespace GOAP
                 .WithEffect(_agentBeliefs[AgentBeliefsName.AgentMoving])
                 .WithCost(goalPriority: 1, time: 10f, energy: 3f)
                 .BuildAgentAction());
- 
-            var foodCort = GetDataOnBlackboard<Transform>(NameAIKeys.FoodLocation).position;
             
             _actions.Add(new ActionBuilder("MoveToEat")
                 .WithActionStrategy(_strategyFactory.CreateMoveToPointStrategy(_blackboard, () => foodCort))
@@ -63,6 +65,19 @@ namespace GOAP
                 .WithEffect(_agentBeliefs[AgentBeliefsName.AgentIsHealthy])
                 .WithCost(goalPriority: 2, time: 3f, energy: 3f, resources: 3f)
                 .BuildAgentAction());
+           
+           _actions.Add(new ActionBuilder("MoveToRest")
+               .WithActionStrategy(_strategyFactory.CreateMoveToPointStrategy(_blackboard, () => restZone))
+               .WithEffect(_agentBeliefs[AgentBeliefsName.AgentAtRestingPosition])
+               .WithCost(goalPriority: 2, time: 10f, energy: 5f)
+               .BuildAgentAction());
+           
+           _actions.Add(new ActionBuilder("Rest")
+               .WithActionStrategy(_strategyFactory.CreateIdleStrategy(5f, _blackboard))
+               .WithPrecondition(_agentBeliefs[AgentBeliefsName.AgentAtRestingPosition])
+               .WithEffect(_agentBeliefs[AgentBeliefsName.AgentIsRested])
+               .WithCost(goalPriority: 2, time: 3f, energy: 3f, resources: 3f)
+               .BuildAgentAction());
             
            _actions.Add(new ActionBuilder("PlayerLook")
                 .WithActionStrategy(_strategyFactory.CreateMoveAttack(_blackboard))
@@ -105,6 +120,9 @@ namespace GOAP
             
             factory.AddBelief(AgentBeliefsName.AgentIsHealthLow, GetFuncDelegate(NameAgentPredicate.HealthLowPredicate));
             factory.AddBelief(AgentBeliefsName.AgentIsHealthy, GetFuncDelegate(NameAgentPredicate.HealthPredicate));
+            
+            factory.AddBelief(AgentBeliefsName.AgentIsStaminaLow, GetFuncDelegate(NameAgentPredicate.StaminaLowPredicate));
+            factory.AddBelief(AgentBeliefsName.AgentIsRested, GetFuncDelegate(NameAgentPredicate.StaminaPredicate));
             
             var foodCort = GetDataOnBlackboard<Transform>(NameAIKeys.FoodLocation).position;
             var chillZone = GetDataOnBlackboard<Transform>(NameAIKeys.ChillLocate).position;
