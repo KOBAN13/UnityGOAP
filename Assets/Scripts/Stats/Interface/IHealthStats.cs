@@ -9,7 +9,5 @@ namespace Stats.Interface
         ReadOnlyReactiveProperty<float> CurrentHealth { get; }
         void SetDamage(float value);
         UniTaskVoid AddHealth(float value);
-        void Unsubscribe();
-        void Subscribe();
     }
 }

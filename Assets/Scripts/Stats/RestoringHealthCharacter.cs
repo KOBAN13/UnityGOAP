@@ -71,7 +71,7 @@ namespace Stats
             
             catch (OperationCanceledException)
             {
-                Debug.Log("Восстановление здоровья отменено");
+                Debug.LogWarning("Восстановление здоровья отменено");
             }
             
             finally
@@ -79,17 +79,6 @@ namespace Stats
                 IsHealthRestoringAfterHitEnemy = false;
                 _tween?.Kill();
             }
-        }
-
-        public void Unsubscribe()
-        {
-            _healthStats.Unsubscribe();
-            Dispose();
-        }
-
-        public void Subscribe()
-        {
-            _healthStats.Subscribe();
         }
 
         public void Dispose()

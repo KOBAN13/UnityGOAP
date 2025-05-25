@@ -51,19 +51,10 @@ namespace Stats
             await UniTask.Yield();
         }
 
-        public void Unsubscribe()
-        {
-            Dispose();
-        }
-
-        public void Subscribe()
-        {
-            //empty
-        }
-
         public void Dispose()
         {
             _cancellationTokenSource?.Dispose();
+            _currentHealth?.Dispose();
         }
     }
 }

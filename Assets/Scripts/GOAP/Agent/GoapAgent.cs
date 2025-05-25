@@ -105,6 +105,7 @@ namespace GOAP
         {
             _disposable.Clear();
             _disposable.Dispose();
+            _agentStats.Dispose();
         }
 
         private void SetupDataToBlackboard()
@@ -166,11 +167,17 @@ namespace GOAP
                     FindMostPriorityGoal();
 
             }).AddTo(_disposable);
+            
+            _agentStats.SubscribeStateChange(() =>
+            {
+                if(_agentStats.IsHealthLow(50) || _agentStats.IsStaminaLow(50))
+                    FindMostPriorityGoal();
+            });
         }
 
         private void UpdateStats()
         {
-            if (_chilZone.position.InRangeOf(transform.position, 3f))
+            if (_foodCort.position.InRangeOf(transform.position, 3f))
             {
                 _agentStats.AddHealth(5);
             }
@@ -179,7 +186,7 @@ namespace GOAP
                 _agentStats.SetDamage(5);
             }
             
-            if (_foodCort.position.InRangeOf(transform.position, 3f))
+            if (_chilZone.position.InRangeOf(transform.position, 3f))
             {
                 _agentStats.AddStamina(5);
             }
