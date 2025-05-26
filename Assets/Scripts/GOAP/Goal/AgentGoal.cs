@@ -10,12 +10,14 @@ namespace GOAP
         public string Name { get; }
         public float Priority { get; private set; }
         public List<AgentBelief> DesiredEffects { get; }
+        public bool IsCompleted { get; private set; }
 
         public AgentGoal(string name)
         {
             Name = name;
             DesiredEffects = new List<AgentBelief>();
             Priority = 0;
+            IsCompleted = false;
         }
         
         public void SetPriority(float priority)
@@ -23,6 +25,8 @@ namespace GOAP
             Preconditions.CheckValidateData(priority);
             Priority = priority;
         }
+        
+        public void SetIsCompleted(bool isCompleted) => IsCompleted = isCompleted;
 
         #region IEquatableAndIComparable
         

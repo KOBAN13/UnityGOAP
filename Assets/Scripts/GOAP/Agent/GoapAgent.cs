@@ -247,24 +247,33 @@ namespace GOAP
         {
             _behaviourTreeNode.Process();
 
-            if (_behaviourTreeNode.Status == BTNodeStatus.Running) return;
+            if (_behaviourTreeNode.Status == BTNodeStatus.Running)
+                return;
             
             _behaviourTreeNode.Reset();
             _behaviourTreeNode.SetGoalsState(default, _agentGoal);
+            
+            _agentGoal.SetIsCompleted(true);
 
             foreach (var node in _behaviourTreeNode.Nodes)
             {
                 _agentsPool.NodesBehaviourTree.Release(node);
             }
             
-            _actionPlan = default;
+            _actionPlan = null;
         }
 
         private void CreatePlan()
         {
-            var (planResult, goalResult) = _goapPlanner.GetPlan(_actions, _goals, _behaviourTreeNode.LastGoal);
+            var mostPriorityGoal = _behaviourTreeNode.LastGoal == default 
+                ? _behaviourTreeNode.CurrentGoal 
+                : _behaviourTreeNode.LastGoal;
+            
+            var (planResult, goalResult) = _goapPlanner.GetPlan(_actions, _goals, mostPriorityGoal);
             
             if (planResult == null) return;
+            
+            Debug.LogWarning($"Create Plan: {goalResult.Name}");
             
             _actionPlan = planResult;
             _agentGoal = goalResult;

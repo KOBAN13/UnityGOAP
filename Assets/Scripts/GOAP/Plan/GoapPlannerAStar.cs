@@ -46,6 +46,7 @@ namespace GOAP
                     .Any(b => !_conditionsCache[b]))
                 .OrderByDescending(goal => goal == mostRecentGoal ? goal.Priority - 0.01f : goal.Priority);
             
+            
             foreach (var goal in orderedGoals)
             {
                 _requiredEffects.Clear();
@@ -63,6 +64,9 @@ namespace GOAP
                     BuildActionStack(startNode);
                     
                     _tempLeafPool.Release(startNode);
+                    
+                    if(goal == mostRecentGoal && mostRecentGoal.IsCompleted)
+                        return (null, default);
                     
                     return (new AgentPlan(startNode.Cost, _actionStack), goal);
                 }

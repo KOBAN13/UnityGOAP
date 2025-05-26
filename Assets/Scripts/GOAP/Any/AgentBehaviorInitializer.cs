@@ -76,7 +76,7 @@ namespace GOAP
                .WithActionStrategy(_strategyFactory.CreateRestStrategy(_blackboard, 5f))
                .WithPrecondition(_agentBeliefs[AgentBeliefsName.AgentAtRestingPosition])
                .WithEffect(_agentBeliefs[AgentBeliefsName.AgentIsRested])
-               .WithCost(goalPriority: 2, time: 3f, energy: 3f, resources: 3f)
+               .WithCost(goalPriority: 3, time: 3f, energy: 3f, resources: 3f)
                .BuildAgentAction());
             
            _actions.Add(new ActionBuilder("PlayerLook")

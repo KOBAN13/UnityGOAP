@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: "CharacterAniman\u0441erParameters"
   m_EditorClassIdentifier: 
   <AnimationCharacter>k__BackingField:
-    _keyData: 0100000003000000020000000400000005000000
+    _keyData: 0100000003000000020000000400000005000000070000000600000008000000
     _valueData:
     - _FadeDuration: 0.25
       _Events:
@@ -61,6 +61,36 @@ MonoBehaviour:
         _Callbacks: []
         _Names: []
       _Clip: {fileID: -203655887218126122, guid: 725fe1cb730294d41b9f3011bea79df4, type: 3}
+      _Speed: 1
+      _NormalizedStartTime: 0
+      applyRootMotion: 0
+      AnimationLayer: 0
+    - _FadeDuration: 0.25
+      _Events:
+        _NormalizedTimes: []
+        _Callbacks: []
+        _Names: []
+      _Clip: {fileID: -203655887218126122, guid: f9e8003338b3b8545b8c7170dedf4242, type: 3}
+      _Speed: 1
+      _NormalizedStartTime: 0
+      applyRootMotion: 0
+      AnimationLayer: 0
+    - _FadeDuration: 0.25
+      _Events:
+        _NormalizedTimes: []
+        _Callbacks: []
+        _Names: []
+      _Clip: {fileID: -203655887218126122, guid: 3498ccd1c04dd6943b39ece5dcd31943, type: 3}
+      _Speed: 1
+      _NormalizedStartTime: 0
+      applyRootMotion: 0
+      AnimationLayer: 0
+    - _FadeDuration: 0.25
+      _Events:
+        _NormalizedTimes: []
+        _Callbacks: []
+        _Names: []
+      _Clip: {fileID: -203655887218126122, guid: 920938440f00b614083c8d4036e3ee77, type: 3}
       _Speed: 1
       _NormalizedStartTime: 0
       applyRootMotion: 0
