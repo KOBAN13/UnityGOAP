@@ -179,7 +179,7 @@ namespace GOAP
         {
             if (_foodCort.position.InRangeOf(transform.position, 3f))
             {
-                _agentStats.AddHealth(5);
+                _agentStats.AddHealth(15);
             }
             else
             {
@@ -188,7 +188,7 @@ namespace GOAP
             
             if (_chilZone.position.InRangeOf(transform.position, 3f))
             {
-                _agentStats.AddStamina(5);
+                _agentStats.AddStamina(15);
             }
             else
             {

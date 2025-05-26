@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace BlackboardScripts
+﻿namespace BlackboardScripts
 {
     public class BlackboardController
     {

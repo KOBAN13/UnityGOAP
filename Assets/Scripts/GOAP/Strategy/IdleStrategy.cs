@@ -53,7 +53,7 @@ namespace GOAP
             Complete = true;
         }
         
-        public EMovementAnimationType GetRandomMovementAnimationType()
+        private EMovementAnimationType GetRandomMovementAnimationType()
         {
             var randomValue = Random.Range(0, 2);
             

@@ -31,9 +31,9 @@ namespace GOAP
             
             factory.AddGoalAgent("Idle", 1, _agentBeliefs[AgentBeliefsName.Nothing]);
             factory.AddGoalAgent("Walk", 1, _agentBeliefs[AgentBeliefsName.AgentMoving]);
-            factory.AddGoalAgent("Health", 2, _agentBeliefs[AgentBeliefsName.AgentIsHealthy]);
             factory.AddGoalAgent("Rest", 2, _agentBeliefs[AgentBeliefsName.AgentIsRested]);
-            factory.AddGoalAgent("Attack", 3, _agentBeliefs[AgentBeliefsName.AttackingPlayer]); 
+            factory.AddGoalAgent("Health", 3, _agentBeliefs[AgentBeliefsName.AgentIsHealthy]); 
+            factory.AddGoalAgent("Attack", 4, _agentBeliefs[AgentBeliefsName.AttackingPlayer]); 
         }
 
         public void SetupActions()
@@ -56,14 +56,14 @@ namespace GOAP
             _actions.Add(new ActionBuilder("MoveToEat")
                 .WithActionStrategy(_strategyFactory.CreateMoveToPointStrategy(_blackboard, () => foodCort))
                 .WithEffect(_agentBeliefs[AgentBeliefsName.AgentAtFoodPosition])
-                .WithCost(goalPriority: 2, time: 10f, energy: 5f)
+                .WithCost(goalPriority: 3, time: 10f, energy: 5f)
                 .BuildAgentAction());
 
            _actions.Add(new ActionBuilder("Heal")
                 .WithActionStrategy(_strategyFactory.CreateIdleStrategy(5f, _blackboard))
                 .WithPrecondition(_agentBeliefs[AgentBeliefsName.AgentAtFoodPosition])
                 .WithEffect(_agentBeliefs[AgentBeliefsName.AgentIsHealthy])
-                .WithCost(goalPriority: 2, time: 3f, energy: 3f, resources: 3f)
+                .WithCost(goalPriority: 3, time: 3f, energy: 3f, resources: 3f)
                 .BuildAgentAction());
            
            _actions.Add(new ActionBuilder("MoveToRest")
@@ -73,7 +73,7 @@ namespace GOAP
                .BuildAgentAction());
            
            _actions.Add(new ActionBuilder("Rest")
-               .WithActionStrategy(_strategyFactory.CreateIdleStrategy(5f, _blackboard))
+               .WithActionStrategy(_strategyFactory.CreateRestStrategy(_blackboard, 5f))
                .WithPrecondition(_agentBeliefs[AgentBeliefsName.AgentAtRestingPosition])
                .WithEffect(_agentBeliefs[AgentBeliefsName.AgentIsRested])
                .WithCost(goalPriority: 2, time: 3f, energy: 3f, resources: 3f)
