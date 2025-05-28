@@ -30,6 +30,8 @@ namespace GOAP.Animation
         {
             var clip = GetClip(type);
             
+            _cancellationToken?.Cancel();
+            
             _animancerComponent.Play(clip, fadeTime);
         }
 

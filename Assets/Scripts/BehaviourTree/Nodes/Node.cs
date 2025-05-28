@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Unity.VisualScripting;
 
 namespace BehaviourTree
 {
@@ -21,11 +22,17 @@ namespace BehaviourTree
         
         public virtual void Stop()
         {
+            if(Nodes.Count == 0)
+                return;
+            
             Nodes[CurrentChild].Stop();
         }
 
         public virtual void Start()
         {
+            if(Nodes.Count == 0)
+                return;
+            
             Nodes[CurrentChild].Start();
         }
         

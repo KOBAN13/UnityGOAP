@@ -272,6 +272,8 @@ namespace GOAP
             {
                 case EGoapPlanStatus.PlanReady:
                     Debug.LogWarning($"Plan Ready: {planContext.Goal.Name}");
+                    _behaviourTreeNode.Stop();
+                    _behaviourTreeNode.Reset();
                     InitializePlan(planContext);
                     return;
                 case EGoapPlanStatus.PlanAborted:
