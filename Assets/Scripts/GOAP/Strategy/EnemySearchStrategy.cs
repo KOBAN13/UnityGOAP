@@ -22,7 +22,7 @@ namespace GOAP
         private readonly Transform _playerTransform;
         private readonly NavMeshAgent _navMesh;
         private readonly Subject<Unit> _timerCompletedSubject = new();
-        private readonly CompositeDisposable _disposable = new();
+        private CompositeDisposable _disposable = new();
         
         private bool _playerKnown;
         private Vector3 _lastKnownPlayerPosition;
@@ -43,9 +43,8 @@ namespace GOAP
 
         public void Start()
         {
-            ClearDisposable();
-            
             Complete = false;
+            _disposable = new CompositeDisposable();
             
             Observable.Interval(TimeSpan.FromSeconds(_timeToSearch))
                 .Take(_countIteration)
@@ -105,7 +104,6 @@ namespace GOAP
         private void ClearDisposable()
         {
             _disposable?.Clear();
-            _disposable?.Dispose();
         }
     }
 }

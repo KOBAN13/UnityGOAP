@@ -22,7 +22,7 @@ namespace GOAP
 
         private const int ITERATION = 4;
         
-        private readonly CancellationTokenSource _cancellationTokenSource = new();
+        private CancellationTokenSource _cancellationTokenSource = new();
 
         public IdleStrategy(float duration, BlackboardController blackboardController)
         {
@@ -34,6 +34,7 @@ namespace GOAP
         public async void Start()
         {
             Complete = false;
+            _cancellationTokenSource = new CancellationTokenSource();
             
             _animationBrain.SetDefaultAnimation(EMovementAnimationType.Idle);
             
@@ -50,6 +51,7 @@ namespace GOAP
         public void Stop()
         {
             _cancellationTokenSource?.Cancel();
+            
             Complete = true;
         }
         

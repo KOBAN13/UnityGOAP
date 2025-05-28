@@ -4,7 +4,7 @@ namespace GOAP
 {
     public interface IGoapPlanner
     {
-        public (AgentPlan plan, AgentGoal goal) GetPlan(
+        public GoapPlanContext GetPlan(
             HashSet<AgentAction> agent,
             HashSet<AgentGoal> goals,
             AgentGoal mostRecentGoal = default

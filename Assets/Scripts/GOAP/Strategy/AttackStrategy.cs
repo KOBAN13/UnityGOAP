@@ -4,7 +4,6 @@ using GOAP.Animation;
 using GOAP.Animation.Enums;
 using Helpers.Constants;
 using R3;
-using UnityEngine;
 
 namespace GOAP
 {
@@ -13,7 +12,7 @@ namespace GOAP
         public bool CanPerform => true;
         public bool Complete { get; private set; }
 
-        private readonly CompositeDisposable _disposable = new();
+        private CompositeDisposable _disposable = new();
         private readonly Subject<Unit> _timerCompletedSubject = new();
         private readonly AnimationBrain _animationBrain;
 
@@ -25,6 +24,7 @@ namespace GOAP
         public void Start()
         {
             Complete = false;
+            _disposable = new CompositeDisposable();
             
             Observable.Interval(TimeSpan.FromSeconds(1f))
                 .Subscribe(_ => Attack()).AddTo(_disposable);

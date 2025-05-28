@@ -227,9 +227,6 @@ namespace GOAP
             if (_actionPlan == null)
                 return;
             
-            _behaviourTreeNode.Stop();
-            _behaviourTreeNode.Reset();
-            
             CreatePlan();
         }
 
@@ -269,14 +266,27 @@ namespace GOAP
                 ? _behaviourTreeNode.CurrentGoal 
                 : _behaviourTreeNode.LastGoal;
             
-            var (planResult, goalResult) = _goapPlanner.GetPlan(_actions, _goals, mostPriorityGoal);
-            
-            if (planResult == null) return;
-            
-            Debug.LogWarning($"Create Plan: {goalResult.Name}");
-            
-            _actionPlan = planResult;
-            _agentGoal = goalResult;
+            var planContext = _goapPlanner.GetPlan(_actions, _goals, mostPriorityGoal);
+
+            switch (planContext.Status)
+            {
+                case EGoapPlanStatus.PlanReady:
+                    Debug.LogWarning($"Plan Ready: {planContext.Goal.Name}");
+                    InitializePlan(planContext);
+                    return;
+                case EGoapPlanStatus.PlanAborted:
+                    Debug.LogWarning($"Plan Aborted: {mostPriorityGoal.Name}");
+                    return;
+                case EGoapPlanStatus.PlanFailed:
+                    Debug.LogWarning("Plan Failed");
+                    break;
+            }
+        }
+
+        private void InitializePlan(GoapPlanContext planResult)
+        {
+            _actionPlan = planResult.Plan;
+            _agentGoal = planResult.Goal;
             _behaviourTreeNode.SetGoalsState(_agentGoal, default);
             InitBehaviourTree(_actionPlan.Actions);
         }

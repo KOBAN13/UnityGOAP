@@ -28,7 +28,7 @@ namespace GOAP
             _poolHashSet = poolHashSet;
         }
 
-        public (AgentPlan plan, AgentGoal goal) GetPlan(
+        public GoapPlanContext GetPlan(
             HashSet<AgentAction> availableActions,
             HashSet<AgentGoal> goals,
             AgentGoal mostRecentGoal = default
@@ -64,11 +64,21 @@ namespace GOAP
                     BuildActionStack(startNode);
                     
                     _tempLeafPool.Release(startNode);
-                    
-                    if(goal == mostRecentGoal && mostRecentGoal.IsCompleted)
-                        return (null, default);
-                    
-                    return (new AgentPlan(startNode.Cost, _actionStack), goal);
+
+                    if (goal == mostRecentGoal && !mostRecentGoal.IsCompleted)
+                        return new GoapPlanContext()
+                        {
+                            Goal = default,
+                            Plan = null,
+                            Status = EGoapPlanStatus.PlanAborted
+                        };
+
+                    return new GoapPlanContext()
+                    {
+                        Goal = goal,
+                        Plan = new AgentPlan(startNode.Cost, _actionStack),
+                        Status = EGoapPlanStatus.PlanReady
+                    };
                 }
 
                 BuildAllLeafs(startNode);
@@ -86,9 +96,13 @@ namespace GOAP
                 
                 _tempLeafPool.Release(startNode);
             }
-
-            Debug.LogWarning("No plan found for any goal");
-            return (null, default); 
+            
+            return new GoapPlanContext()
+            {
+                Goal = default,
+                Plan = null,
+                Status = EGoapPlanStatus.PlanFailed
+            };
         }
 
         private bool FindPathAStar(TempLeaf startNode)

@@ -11,7 +11,7 @@ namespace GOAP
     public class MoveStrategy : IActionStrategy
     {
         public bool CanPerform => !Complete;
-        public bool Complete => _agent.remainingDistance <= 2f && !_agent.pathPending;
+        public bool Complete => _agent.remainingDistance <= 1f && !_agent.pathPending;
         
         private readonly NavMeshAgent _agent;
         private readonly Func<Vector3> _destination;

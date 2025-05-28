@@ -1,6 +1,5 @@
 ﻿using System;
 using BlackboardScripts;
-using Cysharp.Threading.Tasks;
 using GOAP.Animation;
 using GOAP.Animation.Enums;
 using Helpers.Constants;
@@ -15,7 +14,7 @@ namespace GOAP
         
         private readonly AnimationBrain _animationBrain;
         private readonly float _duration;
-        private readonly CompositeDisposable _disposable = new();
+        private CompositeDisposable _disposable = new();
 
         public RestStrategy(BlackboardController blackboardController, float duration)
         {
@@ -25,6 +24,8 @@ namespace GOAP
 
         public void Start()
         {
+            _disposable = new CompositeDisposable();
+            
             Observable.Timer(TimeSpan.FromSeconds(_duration))
                 .Subscribe(_ => Complete = true)
                 .AddTo(_disposable);
@@ -37,7 +38,6 @@ namespace GOAP
             RestStop();
             
             _disposable?.Clear();
-            _disposable?.Dispose();
         }
 
         private void RestStart()

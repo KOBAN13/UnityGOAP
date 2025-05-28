@@ -18,7 +18,7 @@ namespace GOAP
         private readonly Transform _entry;
         private readonly float _duration;
         private bool _isPathCalculated;
-        private readonly CompositeDisposable _disposable = new();
+        private CompositeDisposable _disposable = new();
         private readonly NavGrid _navGrid;
         private readonly Subject<Unit> _timerCompletedSubject = new();
         private readonly AnimationBrain _animationBrain;
@@ -35,6 +35,7 @@ namespace GOAP
         public void Start()
         {
             Complete = false;
+            _disposable = new CompositeDisposable();
 
             Observable.Timer(TimeSpan.FromSeconds(_duration))
                 .Do(_ => Complete = true)
@@ -75,7 +76,6 @@ namespace GOAP
         private void ClearDisposable()
         {
             _disposable?.Clear();
-            _disposable?.Dispose();
         }
     }
 }
