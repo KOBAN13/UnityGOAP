@@ -14,7 +14,6 @@ namespace Stats
         public ReadOnlyReactiveProperty<float> CurrentHealth => _currentHealth;
         
         private float _amountHealthPercentage = 1f;
-        private const float TransferFromInterest = 100f;
         private CancellationTokenSource _cancellationTokenSource;
         
         private readonly ReactiveProperty<float> _currentHealth = new();
@@ -44,9 +43,9 @@ namespace Stats
         {
             Preconditions.CheckValidateData(value);
 
-            _currentHealth.Value = Mathf.Clamp(value * TransferFromInterest, 0f, MaxHealth);
+            _currentHealth.Value = Mathf.Clamp(value + _currentHealth.Value, 0f, MaxHealth);
 
-            _amountHealthPercentage = value;
+            _amountHealthPercentage = _currentHealth.Value / MaxHealth;
             
             await UniTask.Yield();
         }

@@ -313,7 +313,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!23 &331661524
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -1528,6 +1528,14 @@ PrefabInstance:
       propertyPath: _foodCort
       value: 
       objectReference: {fileID: 1652301861}
+    - target: {fileID: 8185842049822543172, guid: 3080ef16e11ae7f4291ea3411b2cd55f, type: 3}
+      propertyPath: _healthGradient.ctime0
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8185842049822543172, guid: 3080ef16e11ae7f4291ea3411b2cd55f, type: 3}
+      propertyPath: _healthGradient.m_ColorSpace
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8207044225698668064, guid: 3080ef16e11ae7f4291ea3411b2cd55f, type: 3}
       propertyPath: m_Layer
       value: 8

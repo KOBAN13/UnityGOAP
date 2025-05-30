@@ -267,6 +267,11 @@ namespace GOAP
                 : _behaviourTreeNode.LastGoal;
             
             var planContext = _goapPlanner.GetPlan(_actions, _goals, mostPriorityGoal);
+            
+            //есть пару проблем,
+            //то что после отмены idle,
+            //новая анимация не запускатеся проблема в animation brain и перса еще калоебит тоже по то проблеме
+            //и почему то rest стейт ебашит по прежнему новый план и потом аборт и так по кругу тоже надол решить эту хуйню
 
             switch (planContext.Status)
             {

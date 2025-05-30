@@ -4,6 +4,7 @@ using GOAP.Animation;
 using GOAP.Animation.Enums;
 using Helpers.Constants;
 using R3;
+using UnityEngine;
 
 namespace GOAP
 {
@@ -24,6 +25,8 @@ namespace GOAP
 
         public void Start()
         {
+            Debug.Log("Start Rest");
+            
             _disposable = new CompositeDisposable();
             
             Observable.Timer(TimeSpan.FromSeconds(_duration))

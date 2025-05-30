@@ -32,6 +32,9 @@ namespace GOAP.Animation
             
             _cancellationToken?.Cancel();
             
+            
+            Debug.Log("Play Animation: " + type);
+            
             _animancerComponent.Play(clip, fadeTime);
         }
 
@@ -72,6 +75,8 @@ namespace GOAP.Animation
 
             var state = _animancerComponent.Play(clip, request.FadeDuration);
             
+            Debug.Log("Запустил анимацию : " + request.Type);
+            
             if(request.Speed != 0f)
                 state.Speed = request.Speed;
             
@@ -79,13 +84,23 @@ namespace GOAP.Animation
             
             state.LayerIndex = (int)request.AnimationLayer;
             
-            await UniTask.Delay(TimeSpan.FromSeconds(clip.Clip.length * request.Delta), cancellationToken: _cancellationToken.Token)
-                .SuppressCancellationThrow();
-
-            _animancerComponent.Play(GetClip(_defaultAnimationType), clip.Clip.length * (1 - request.Delta));
-            
-            _currentForceAnimationType = EMovementAnimationType.None;
-            _cancellationToken = null;
+            try 
+            {
+                await UniTask.Delay(TimeSpan.FromSeconds(clip.Clip.length * request.Delta), cancellationToken: _cancellationToken.Token);
+                
+                Debug.Log("Запустил анимацию после задрежки " + _defaultAnimationType);
+                
+                _animancerComponent.Play(GetClip(_defaultAnimationType), clip.Clip.length * (1 - request.Delta));
+            }
+            catch (OperationCanceledException)
+            {
+                Debug.Log("Force animation was cancelled");
+            }
+            finally 
+            {
+                _currentForceAnimationType = EMovementAnimationType.None;
+                _cancellationToken = null;
+            }
         }
     }
 }

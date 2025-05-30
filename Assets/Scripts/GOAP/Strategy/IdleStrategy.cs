@@ -33,23 +33,37 @@ namespace GOAP
 
         public async void Start()
         {
+            Debug.Log("Start Idle");
+            
             Complete = false;
             _cancellationTokenSource = new CancellationTokenSource();
             
             _animationBrain.SetDefaultAnimation(EMovementAnimationType.Idle);
             
-            for (var i = 0; i < ITERATION; i++)
+            try
             {
-                _animationBrain.PlayForce(new AnimationRequest(GetRandomMovementAnimationType(), true, EAnimationLayer.Default, 0.8f));
-                
-                await UniTask.Delay(TimeSpan.FromSeconds(_duration / ITERATION), cancellationToken: _cancellationTokenSource.Token).SuppressCancellationThrow();
+                for (var i = 0; i < ITERATION; i++)
+                {
+                    _animationBrain.PlayForce(new AnimationRequest(GetRandomMovementAnimationType(), true, EAnimationLayer.Default, 0.8f));
+                    
+                    await UniTask.Delay(TimeSpan.FromSeconds(_duration / ITERATION),
+                        cancellationToken: _cancellationTokenSource.Token);
+                }
             }
-
-            Complete = true;
+            catch (OperationCanceledException)
+            {
+                Debug.Log("Idle was cancelled");
+            }
+            finally
+            {
+                Complete = true;
+            }
         }
 
         public void Stop()
         {
+            Debug.Log("Stop Idle");
+            
             _cancellationTokenSource?.Cancel();
             
             Complete = true;
