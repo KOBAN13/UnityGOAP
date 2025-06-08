@@ -12,10 +12,11 @@ namespace Stats
     {
         public float MaxHealth { get; }
         public ReadOnlyReactiveProperty<float> CurrentHealth => _currentHealth;
+        public ReadOnlyReactiveProperty<float> CurrentHealthPercentage => _amountHealthPercentage;
         
-        private float _amountHealthPercentage = 1f;
         private CancellationTokenSource _cancellationTokenSource;
         
+        private readonly ReactiveProperty<float> _amountHealthPercentage = new(1f);
         private readonly ReactiveProperty<float> _currentHealth = new();
         private readonly OperationWithHealth _operationWithHealth;
         
@@ -31,7 +32,7 @@ namespace Stats
 
             _currentHealth.Value = Mathf.Clamp(_currentHealth.Value - value, 0f, MaxHealth);
 
-            _amountHealthPercentage -= value / MaxHealth;
+            _amountHealthPercentage.Value = Mathf.Clamp(_amountHealthPercentage.Value - value / MaxHealth, 0f, 1f);
             
             if (_currentHealth.Value != 0f) 
                 return;
@@ -45,7 +46,7 @@ namespace Stats
 
             _currentHealth.Value = Mathf.Clamp(value + _currentHealth.Value, 0f, MaxHealth);
 
-            _amountHealthPercentage = _currentHealth.Value / MaxHealth;
+            _amountHealthPercentage.Value = Mathf.Clamp(_currentHealth.Value / MaxHealth, 0f, 1f);
             
             await UniTask.Yield();
         }

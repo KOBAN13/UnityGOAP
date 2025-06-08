@@ -7,6 +7,7 @@ namespace Stats.Interface
     {
         float MaxHealth { get; } 
         ReadOnlyReactiveProperty<float> CurrentHealth { get; }
+        ReadOnlyReactiveProperty<float> CurrentHealthPercentage { get; }
         void SetDamage(float value);
         UniTaskVoid AddHealth(float value);
     }

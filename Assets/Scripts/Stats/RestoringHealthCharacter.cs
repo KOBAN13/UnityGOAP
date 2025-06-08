@@ -12,6 +12,8 @@ namespace Stats
     {
         public float MaxHealth { get; private set; }
         public ReadOnlyReactiveProperty<float> CurrentHealth => _currentHealth;
+        
+        public ReadOnlyReactiveProperty<float> CurrentHealthPercentage { get; }
         public bool IsHealthRestoringAfterHitEnemy { get; set; } = false;
         public bool IsHealthRestoringAfterDieEnemy { get; set; } = false;
 
